@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DTD Townhall 2026 - Jalinan Merdeka</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Archivo+Black&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#001a70;
+    --gold:#ffd700;
+    --red:#d7282f;
+    --cyan:#22c0de;
+    --panel:#d7f7ff;
+    --paper:#040b18;
+    --green:#1f9d55;
+    --terminal-navy:#000c3a;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    background:var(--paper);
+    overflow:hidden;
+    font-family:'Space Mono',monospace;
+  }
+
+  #stage{
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:1920px;
+    height:1080px;
+    background:var(--paper);
+    transform:translate(-50%,-50%) scale(min(calc(100vw / 1920px), calc(100vh / 1080px)));
+    transform-origin:center center;
+    overflow:hidden;
+  }
+
+  #bgImage{
+    position:absolute;
+    inset:0;
+    width:1920px;
+    height:1080px;
+    object-fit:cover;
+  }
+
+  #circuitSvg{
+    position:absolute;
+    inset:0;
+    width:1920px;
+    height:1080px;
+  }
+
+  .frame{
+    position:absolute;
+    inset:0;
+    width:1920px;
+    height:1080px;
+    background:rgba(6,20,34,.62);
+    border:1px solid rgba(34,192,222,.4);
+    border-radius:6px;
+    box-shadow:0 0 50px rgba(34,192,222,.18), inset 0 0 70px rgba(34,192,222,.08);
+  }
+
+  .corner{
+    position:absolute;
+    width:64px;
+    height:64px;
+    pointer-events:none;
+  }
+  .corner::before,
+  .corner::after{
+    content:'';
+    position:absolute;
+    background:var(--cyan);
+    box-shadow:0 0 10px rgba(34,192,222,.7);
+  }
+  .corner::before{ width:100%; height:4px; }
+  .corner::after{ width:4px; height:100%; }
+  .corner.tl{ top:-2px; left:-2px; }
+  .corner.tl::before,
+  .corner.tl::after{ top:0; left:0; }
+  .corner.tr{ top:-2px; right:-2px; }
+  .corner.tr::before,
+  .corner.tr::after{ top:0; right:0; }
+  .corner.bl{ bottom:-2px; left:-2px; }
+  .corner.bl::before,
+  .corner.bl::after{ bottom:0; left:0; }
+  .corner.br{ bottom:-2px; right:-2px; }
+  .corner.br::before,
+  .corner.br::after{ bottom:0; right:0; }
+
+  @keyframes cornerFlare{
+    0%,100%{ background:var(--cyan); box-shadow:0 0 10px rgba(34,192,222,.7); }
+    50%{ background:var(--gold); box-shadow:0 0 22px rgba(255,215,0,.9); }
+  }
+  .corner.flare::before,
+  .corner.flare::after{
+    animation:cornerFlare 1.4s ease-in-out;
+  }
+
+  [hidden]{ display:none !important; }
+
+  .content{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    padding:50px 80px 40px 80px;
+    text-align:center;
+  }
+
+  .status-line{
+    font-family:'Archivo Black',sans-serif;
+    font-size:38px;
+    letter-spacing:5px;
+    color:var(--red);
+    text-transform:uppercase;
+    margin:0 0 20px 0;
+  }
+
+  .terminal{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:60px;
+    background:var(--terminal-navy);
+    border:3px solid var(--cyan);
+    border-radius:6px;
+    padding:50px 110px;
+    margin-bottom:24px;
+    min-width:1440px;
+    box-shadow:0 0 30px rgba(34,192,222,.35), 0 0 150px rgba(34,192,222,.16);
+  }
+
+  .bracket{
+    font-family:'Space Mono',monospace;
+    font-size:110px;
+    line-height:1;
+    color:var(--cyan);
+    opacity:.55;
+  }
+
+  .slot{
+    display:inline-block;
+    width:160px;
+    text-align:center;
+    font-family:'Space Mono',monospace;
+    font-weight:700;
+    font-size:110px;
+    line-height:1;
+    color:var(--cyan);
+    transition:color .25s ease, text-shadow .25s ease;
+  }
+
+  .slot.filled{
+    color:var(--gold);
+    text-shadow:0 0 18px rgba(255,215,0,.6);
+    animation:none;
+  }
+  @keyframes slotIdle{
+    0%,100%{ opacity:.55; }
+    50%{ opacity:1; }
+  }
+  .slot:not(.filled){
+    animation:slotIdle 2.2s ease-in-out infinite;
+  }
+
+  @keyframes flashWrong{
+    0%   { background:var(--terminal-navy); }
+    25%  { background:var(--red); }
+    55%  { background:var(--gold); }
+    100% { background:var(--terminal-navy); }
+  }
+  .terminal.flash-wrong-anim{
+    animation:flashWrong .9s ease-in-out;
+  }
+
+  .quiz-card{
+    position:relative;
+    width:1440px;
+    background:rgba(0,12,58,.55);
+    border:1px solid rgba(34,192,222,.6);
+    border-radius:6px;
+    padding:36px 64px;
+    text-align:left;
+    box-shadow:0 0 24px rgba(34,192,222,.15), inset 0 0 34px rgba(34,192,222,.06);
+  }
+  .quiz-card::before{
+    content:'';
+    position:absolute;
+    top:-1px;
+    left:24px;
+    width:120px;
+    height:3px;
+    background:var(--cyan);
+    box-shadow:0 0 8px rgba(34,192,222,.7);
+  }
+
+  .progress-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin:0 0 14px 0;
+  }
+  .progress-label{
+    font-family:'Space Mono',monospace;
+    font-size:20px;
+    letter-spacing:3px;
+    color:var(--cyan);
+    text-transform:uppercase;
+    margin:0;
+  }
+  .progress-label::after{
+    content:'\258C';
+    margin-left:6px;
+    color:var(--cyan);
+    animation:cursorBlink 1.1s steps(1) infinite;
+  }
+  @keyframes cursorBlink{
+    0%, 55%   { opacity:1; }
+    56%, 100% { opacity:0; }
+  }
+
+  .progress-dots{
+    display:flex;
+    gap:6px;
+  }
+  .dot{
+    width:12px;
+    height:12px;
+    border-radius:50%;
+    background:rgba(34,192,222,.25);
+    transition:background .25s ease, box-shadow .25s ease;
+  }
+  .dot.active{
+    background:var(--cyan);
+    box-shadow:0 0 6px rgba(34,192,222,.6);
+  }
+  .dot.done{
+    background:var(--gold);
+    box-shadow:0 0 6px rgba(255,215,0,.6);
+  }
+
+  .question{
+    font-family:'Archivo Black',sans-serif;
+    font-size:38px;
+    line-height:1.3;
+    color:var(--panel);
+    margin:0 0 18px 0;
+  }
+  @keyframes fadeSlideIn{
+    from{ opacity:0; transform:translateY(14px); }
+    to  { opacity:1; transform:translateY(0); }
+  }
+  .question.enter{ animation:fadeSlideIn .35s ease-out both; }
+
+  .answers{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+
+  .answer-btn{
+    font-family:'Archivo Black',sans-serif;
+    font-size:28px;
+    text-transform:uppercase;
+    text-align:left;
+    color:#fff;
+    background:var(--terminal-navy);
+    border:2px solid var(--cyan);
+    border-radius:6px;
+    padding:26px 40px;
+    cursor:pointer;
+    transition:background .15s ease, transform .1s ease, box-shadow .15s ease;
+  }
+  .answer-btn.enter{ animation:fadeSlideIn .35s ease-out both; }
+  .answer-btn:hover:not(:disabled){
+    background:#001850;
+    box-shadow:0 0 16px rgba(34,192,222,.4);
+  }
+  .answer-btn:active:not(:disabled){
+    transform:scale(.97);
+  }
+  .answer-btn:disabled{
+    cursor:default;
+  }
+  .answer-btn.flash-correct{
+    background:var(--gold);
+    color:var(--navy);
+    border-color:var(--gold);
+  }
+  .answer-btn.flash-wrong{
+    background:var(--red);
+    color:#fff;
+    border-color:var(--red);
+  }
+
+  .feedback{
+    min-height:22px;
+    margin-top:14px;
+  }
+  .feedback:not(:empty){
+    display:inline-block;
+    padding:6px 14px;
+    border-radius:20px;
+    font-family:'Space Mono',monospace;
+    font-weight:700;
+    font-size:18px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+  }
+  .feedback-correct{ color:var(--green); background:rgba(31,157,85,.12); border:1px solid rgba(31,157,85,.4); }
+  .feedback-wrong{ color:var(--red); background:rgba(215,40,47,.12); border:1px solid rgba(215,40,47,.4); }
+
+  .trivia{
+    max-height:0;
+    opacity:0;
+    overflow:hidden;
+    margin-top:0;
+    transition:max-height .35s ease, opacity .35s ease, margin-top .35s ease;
+  }
+  .trivia.shown{
+    max-height:120px;
+    opacity:1;
+    margin-top:16px;
+  }
+  .trivia-label{
+    font-family:'Space Mono',monospace;
+    font-size:18px;
+    letter-spacing:2px;
+    color:var(--cyan);
+    opacity:.85;
+    text-transform:uppercase;
+    margin:0 0 4px 0;
+  }
+  .trivia-text{
+    font-family:'Space Mono',monospace;
+    font-size:21px;
+    line-height:1.5;
+    color:var(--panel);
+  }
+
+  .success{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin-top:10px;
+  }
+  .success-title{
+    position:relative;
+    font-family:'Archivo Black',sans-serif;
+    font-size:120px;
+    color:var(--gold);
+    text-shadow:4px 4px 0 var(--red);
+    letter-spacing:2px;
+    margin:0;
+    animation:successPop .6s cubic-bezier(.16,1,.3,1) both;
+  }
+  .success-title::before,
+  .success-title::after{
+    content:attr(data-text);
+    position:absolute;
+    inset:0;
+    letter-spacing:2px;
+    mix-blend-mode:screen;
+    pointer-events:none;
+  }
+  .success-title::before{
+    color:var(--cyan);
+    animation:glitchLayerCyan .9s steps(1,end) infinite;
+  }
+  .success-title::after{
+    color:var(--red);
+    animation:glitchLayerRed .9s steps(1,end) infinite;
+  }
+  @keyframes glitchLayerCyan{
+    0%   { clip-path:inset(0 0 85% 0);  transform:translate(0,0);      opacity:.2; }
+    8%   { clip-path:inset(10% 0 60% 0);transform:translate(-9px,-3px);opacity:1; }
+    16%  { clip-path:inset(55% 0 15% 0);transform:translate(9px,2px);  opacity:1; }
+    24%  { clip-path:inset(20% 0 50% 0);transform:translate(-7px,3px); opacity:.9; }
+    32%  { clip-path:inset(70% 0 5% 0); transform:translate(8px,-2px); opacity:1; }
+    45%  { clip-path:inset(30% 0 40% 0);transform:translate(-5px,0);   opacity:.7; }
+    60%  { clip-path:inset(0 0 0 0);    transform:translate(4px,2px);  opacity:.5; }
+    75%  { clip-path:inset(45% 0 30% 0);transform:translate(-8px,-2px);opacity:.85; }
+    88%  { clip-path:inset(15% 0 65% 0);transform:translate(6px,1px);  opacity:.6; }
+    100% { clip-path:inset(0 0 85% 0);  transform:translate(0,0);      opacity:.2; }
+  }
+  @keyframes glitchLayerRed{
+    0%   { clip-path:inset(80% 0 0 0); transform:translate(0,0);      opacity:.2; }
+    10%  { clip-path:inset(50% 0 20% 0);transform:translate(9px,3px);  opacity:1; }
+    18%  { clip-path:inset(10% 0 65% 0);transform:translate(-8px,-2px);opacity:1; }
+    28%  { clip-path:inset(60% 0 10% 0);transform:translate(7px,-3px); opacity:.9; }
+    38%  { clip-path:inset(5% 0 75% 0); transform:translate(-9px,2px); opacity:1; }
+    50%  { clip-path:inset(40% 0 30% 0);transform:translate(5px,0);    opacity:.6; }
+    65%  { clip-path:inset(0 0 0 0);    transform:translate(-4px,-2px);opacity:.5; }
+    78%  { clip-path:inset(35% 0 40% 0);transform:translate(8px,2px);  opacity:.9; }
+    90%  { clip-path:inset(70% 0 10% 0);transform:translate(-6px,1px); opacity:.6; }
+    100% { clip-path:inset(80% 0 0 0);  transform:translate(0,0);      opacity:.2; }
+  }
+  .success-title.burst::before{
+    animation:glitchBurstCyan .1s steps(1,end) 7 !important;
+  }
+  .success-title.burst::after{
+    animation:glitchBurstRed .1s steps(1,end) 7 !important;
+  }
+  @keyframes glitchBurstCyan{
+    0%   { clip-path:inset(0 0 70% 0);  transform:translate(-16px,-4px); opacity:1; }
+    25%  { clip-path:inset(60% 0 5% 0); transform:translate(14px,3px);   opacity:.2; }
+    50%  { clip-path:inset(10% 0 55% 0);transform:translate(-12px,4px);  opacity:1; }
+    75%  { clip-path:inset(40% 0 20% 0);transform:translate(10px,-3px);  opacity:.3; }
+    100% { clip-path:inset(0 0 0 0);    transform:translate(-14px,2px);  opacity:1; }
+  }
+  @keyframes glitchBurstRed{
+    0%   { clip-path:inset(70% 0 0 0);  transform:translate(15px,4px);   opacity:1; }
+    25%  { clip-path:inset(5% 0 60% 0); transform:translate(-13px,-3px); opacity:.2; }
+    50%  { clip-path:inset(55% 0 10% 0);transform:translate(12px,-4px);  opacity:1; }
+    75%  { clip-path:inset(20% 0 40% 0);transform:translate(-11px,3px);  opacity:.3; }
+    100% { clip-path:inset(0 0 0 0);    transform:translate(14px,-2px);  opacity:1; }
+  }
+  .success-sub{
+    font-family:'Caveat',cursive;
+    font-weight:700;
+    font-size:64px;
+    color:var(--panel);
+    margin:18px 0 0 0;
+    animation:successPop .6s cubic-bezier(.16,1,.3,1) .25s both;
+  }
+  @keyframes successPop{
+    from{ transform:scale(.7) translateY(20px); opacity:0; }
+    to  { transform:scale(1) translateY(0);     opacity:1; }
+  }
+
+  #burstLayer{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+  }
+  .burst-p{
+    position:absolute;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    animation:particleFly .95s cubic-bezier(.1,.8,.3,1) forwards;
+  }
+  @keyframes particleFly{
+    from{ transform:translate(0,0) scale(1); opacity:1; }
+    to  { transform:translate(var(--dx), var(--dy)) scale(.15); opacity:0; }
+  }
+
+  @keyframes surgeGlow{
+    0%   { filter:none; }
+    40%  { filter:drop-shadow(0 0 20px var(--cyan)) brightness(1.15); }
+    100% { filter:none; }
+  }
+  .content.surge{ animation:surgeGlow .7s ease-out; }
+
+  @keyframes doublePulse{
+    0%   { filter:none; }
+    20%  { filter:drop-shadow(0 0 28px var(--gold)) brightness(1.28); }
+    40%  { filter:none; }
+    60%  { filter:drop-shadow(0 0 28px var(--gold)) brightness(1.28); }
+    100% { filter:none; }
+  }
+  .content.double-pulse{ animation:doublePulse 1.4s ease-in-out; }
+
+  @media (prefers-reduced-motion: reduce){
+    .terminal.flash-wrong-anim,
+    .content.surge,
+    .content.double-pulse,
+    .progress-label::after,
+    .success-title,
+    .success-sub,
+    .success-title::before,
+    .success-title::after,
+    .success-title.burst::before,
+    .success-title.burst::after,
+    .burst-p,
+    .slot:not(.filled),
+    .question.enter,
+    .answer-btn.enter,
+    .corner.flare::before,
+    .corner.flare::after{ animation:none !important; }
+    .success-title, .success-sub{ opacity:1; transform:none; }
+    .success-title::before,
+    .success-title::after{ content:none; }
+    .question.enter, .answer-btn.enter{ opacity:1; transform:none; }
+    .slot:not(.filled){ opacity:.8; }
+    .slot, .answer-btn{ transition:none; }
+    .answer-btn:active{ transform:none; }
+    .trivia{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <img id="bgImage" src="assets/glitch-bg.png" alt="">
+  <svg id="circuitSvg" viewBox="0 0 1920 1080"></svg>
+
+  <div class="frame">
+    <span class="corner tl"></span>
+    <span class="corner tr"></span>
+    <span class="corner bl"></span>
+    <span class="corner br"></span>
+    <div id="burstLayer"></div>
+
+    <div class="content" id="contentEl">
+      <div class="status-line" id="statusLine">Status: Awaiting Verification</div>
+
+      <div class="terminal" id="terminalEl">
+        <span class="bracket">[</span>
+        <span class="slot" id="slot0">_</span>
+        <span class="slot" id="slot1">_</span>
+        <span class="slot" id="slot2">_</span>
+        <span class="slot" id="slot3">_</span>
+        <span class="bracket">]</span>
+      </div>
+
+      <div class="quiz-card" id="quizCard">
+        <div class="progress-row">
+          <div class="progress-label" id="progressLabel">Question 1 of 4</div>
+          <div class="progress-dots" id="progressDots">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+        </div>
+        <div class="question" id="questionText"></div>
+        <div class="answers" id="answersEl"></div>
+        <div class="feedback" id="feedbackEl"></div>
+        <div class="trivia" id="triviaEl">
+          <div class="trivia-label">Did You Know</div>
+          <div class="trivia-text" id="triviaText"></div>
+        </div>
+      </div>
+
+      <div class="success" id="successState" hidden>
+        <div class="success-title" id="successTitle" data-text="ACCESS GRANTED">ACCESS GRANTED</div>
+        <div class="success-sub">Jalinan Merdeka activated</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ---------- stage scaling (JS authoritative; CSS min()/calc() in stylesheet is the no-JS fallback) ----------
+  var stage = document.getElementById('stage');
+  function fitStage(){
+    var scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    stage.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
+  }
+  window.addEventListener('resize', fitStage);
+  fitStage();
+
+  // ---------- quiz data (PIN = 1957) ----------
+  var QUESTIONS = [
+    {
+      q: 'Which agreement created the Federation of Malaya, paving the way to independence?',
+      choices: [
+        { text: 'Federation of Malaya Agreement 1957', correct: true },
+        { text: 'Malayan Union Agreement 1946', correct: false }
+      ],
+      digit: '1',
+      trivia: 'The Malayan Union was scrapped in 1948 after fierce Malay opposition, replaced by the Federation of Malaya Agreement that eventually led to independence.'
+    },
+    {
+      q: 'Where did Tunku Abdul Rahman proclaim independence?',
+      choices: [
+        { text: 'Stadium Merdeka, KL', correct: true },
+        { text: 'Istana Negara', correct: false }
+      ],
+      digit: '9',
+      trivia: "The midnight proclamation actually happened quietly at the Selangor Club Padang (today's Dataran Merdeka); the iconic public Merdeka cry came hours later at Stadium Merdeka."
+    },
+    {
+      q: "Who was Malaysia's first Prime Minister?",
+      choices: [
+        { text: 'Tunku Abdul Rahman', correct: true },
+        { text: 'Tun Abdul Razak', correct: false }
+      ],
+      digit: '5',
+      trivia: 'Tunku Abdul Rahman led the country until 1970, steering it through the 1963 formation of Malaysia.'
+    },
+    {
+      q: 'How many times did Tunku shout "Merdeka!" at the proclamation?',
+      choices: [
+        { text: 'Seven', correct: true },
+        { text: 'Three', correct: false }
+      ],
+      digit: '7',
+      trivia: 'That sevenfold cry is still reenacted every National Day at Dataran Merdeka.'
+    }
+  ];
+
+  var qIndex = 0;
+  var statusLine   = document.getElementById('statusLine');
+  var terminalEl   = document.getElementById('terminalEl');
+  var contentEl    = document.getElementById('contentEl');
+  var quizCard     = document.getElementById('quizCard');
+  var successState = document.getElementById('successState');
+  var successTitle = document.getElementById('successTitle');
+  var progressLabel= document.getElementById('progressLabel');
+  var progressDots = document.getElementById('progressDots');
+  var questionText = document.getElementById('questionText');
+  var answersEl    = document.getElementById('answersEl');
+  var feedbackEl   = document.getElementById('feedbackEl');
+  var triviaEl     = document.getElementById('triviaEl');
+  var triviaText   = document.getElementById('triviaText');
+
+  function renderQuestion(){
+    var item = QUESTIONS[qIndex];
+    progressLabel.textContent = 'Question ' + (qIndex + 1) + ' of 4';
+    var dots = progressDots.querySelectorAll('.dot');
+    for (var d = 0; d < dots.length; d++){
+      dots[d].className = 'dot' + (d < qIndex ? ' done' : d === qIndex ? ' active' : '');
+    }
+    questionText.textContent = item.q;
+    questionText.classList.remove('enter');
+    void questionText.offsetWidth;
+    questionText.classList.add('enter');
+    answersEl.innerHTML = '';
+    item.choices.forEach(function(choice, idx){
+      var btn = document.createElement('button');
+      btn.className = 'answer-btn enter';
+      btn.style.animationDelay = (idx * 0.08).toFixed(2) + 's';
+      btn.textContent = choice.text;
+      btn.addEventListener('click', function(){ handleAnswer(choice, btn); });
+      answersEl.appendChild(btn);
+    });
+    feedbackEl.textContent = '';
+    feedbackEl.className = 'feedback';
+    triviaText.textContent = '';
+    triviaEl.className = 'trivia';
+  }
+
+  function setButtonsDisabled(state){
+    var btns = answersEl.querySelectorAll('button');
+    for (var i = 0; i < btns.length; i++) btns[i].disabled = state;
+  }
+
+  function fillSlot(i, digit){
+    var slot = document.getElementById('slot' + i);
+    slot.textContent = digit;
+    slot.classList.add('filled');
+  }
+
+  function surge(){
+    contentEl.classList.add('surge');
+    setTimeout(function(){ contentEl.classList.remove('surge'); }, 700);
+  }
+
+  function showTrivia(){
+    triviaText.textContent = QUESTIONS[qIndex].trivia;
+    triviaEl.className = 'trivia shown';
+  }
+
+  function handleAnswer(choice, btn){
+    setButtonsDisabled(true);
+    if (choice.correct){
+      playCorrect();
+      btn.classList.add('flash-correct');
+      feedbackEl.textContent = 'Correct · Digit Unlocked';
+      feedbackEl.className = 'feedback feedback-correct';
+      fillSlot(qIndex, QUESTIONS[qIndex].digit);
+      showTrivia();
+      surge();
+      setTimeout(function(){
+        qIndex++;
+        if (qIndex >= QUESTIONS.length){
+          unlockSystem();
+        } else {
+          renderQuestion();
+        }
+      }, 2400);
+    } else {
+      playWrong();
+      btn.classList.add('flash-wrong');
+      terminalEl.classList.add('flash-wrong-anim');
+      feedbackEl.textContent = 'Not Quite · Try Again';
+      feedbackEl.className = 'feedback feedback-wrong';
+      showTrivia();
+      setTimeout(function(){
+        terminalEl.classList.remove('flash-wrong-anim');
+        renderQuestion();
+      }, 2400);
+    }
+  }
+
+  function spawnBurst(){
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var layer = document.getElementById('burstLayer');
+    var termRect = terminalEl.getBoundingClientRect();
+    var layerRect = layer.getBoundingClientRect();
+    // rects are in screen px (post stage-scale); convert to layer-local coords
+    var scaleX = layer.offsetWidth / layerRect.width;
+    var scaleY = layer.offsetHeight / layerRect.height;
+    var cx = (termRect.left + termRect.width / 2 - layerRect.left) * scaleX;
+    var cy = (termRect.top + termRect.height / 2 - layerRect.top) * scaleY;
+    var colors = ['#ffd700', '#22c0de', '#d7282f'];
+    for (var i = 0; i < 32; i++){
+      var p = document.createElement('span');
+      p.className = 'burst-p';
+      var angle = (i / 32) * Math.PI * 2 + Math.random() * 0.4;
+      var dist = 160 + Math.random() * 320;
+      p.style.left = cx + 'px';
+      p.style.top = cy + 'px';
+      p.style.background = colors[i % colors.length];
+      p.style.setProperty('--dx', (Math.cos(angle) * dist).toFixed(0) + 'px');
+      p.style.setProperty('--dy', (Math.sin(angle) * dist).toFixed(0) + 'px');
+      p.style.animationDelay = (Math.random() * 0.15).toFixed(2) + 's';
+      layer.appendChild(p);
+    }
+    setTimeout(function(){ layer.innerHTML = ''; }, 1400);
+  }
+
+  function unlockSystem(){
+    quizCard.hidden = true;
+    successState.hidden = false;
+    statusLine.textContent = 'Status: System Unlocked';
+    contentEl.classList.add('double-pulse');
+    var corners = document.querySelectorAll('.corner');
+    corners.forEach(function(c){ c.classList.add('flare'); });
+    successTitle.classList.add('burst');
+    spawnBurst();
+    playUnlock();
+    setTimeout(function(){
+      contentEl.classList.remove('double-pulse');
+      corners.forEach(function(c){ c.classList.remove('flare'); });
+      successTitle.classList.remove('burst');
+    }, 1400);
+  }
+
+  // ---------- WebAudio SFX ----------
+  var audioCtx = null;
+  function ensureAudio(){
+    if (!audioCtx){
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new Ctx();
+    }
+    return audioCtx;
+  }
+
+  function beep(freq, dur, type, startDelay, gainPeak){
+    startDelay = startDelay || 0;
+    gainPeak = gainPeak || 0.2;
+    var ctx = ensureAudio();
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.value = freq;
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    var t0 = ctx.currentTime + startDelay;
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.linearRampToValueAtTime(gainPeak, t0 + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    osc.start(t0);
+    osc.stop(t0 + dur + 0.03);
+  }
+
+  function playCorrect(){ beep(760, 0.1, 'square'); }
+  function playWrong(){ beep(150, 0.4, 'sawtooth', 0, 0.25); }
+  function playUnlock(){
+    var notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach(function(f, i){ beep(f, 0.28, 'sine', i * 0.16, 0.22); });
+  }
+
+  // ---------- circuit-weave background ----------
+  var COLORS = { cyan: '#0cc0df', gold: '#ffd700' };
+
+  function buildCircuit(){
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var xlinkNS = 'http://www.w3.org/1999/xlink';
+    var svg = document.getElementById('circuitSvg');
+
+    var defs = document.createElementNS(svgNS, 'defs');
+    defs.innerHTML =
+      '<filter id="packetGlow" x="-200%" y="-200%" width="500%" height="500%">' +
+      '<feGaussianBlur stdDeviation="2.6" result="b"/>' +
+      '<feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>' +
+      '</filter>';
+    svg.appendChild(defs);
+
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var traceCount = 40;
+    var viaMax = reduceMotion ? 0 : 80;
+    var packetCount = reduceMotion ? 0 : 14;
+    var cols = 16, rows = 9;
+    var cellW = 1920 / cols, cellH = 1080 / rows;
+    var viaBudget = viaMax;
+    var traces = [];
+
+    for (var t = 0; t < traceCount; t++){
+      var gx = Math.floor(Math.random() * cols);
+      var gy = Math.floor(Math.random() * rows);
+      var x = gx * cellW + (Math.random() - 0.5) * cellW * 0.6 + cellW / 2;
+      var y = gy * cellH + (Math.random() - 0.5) * cellH * 0.6 + cellH / 2;
+      var steps = 3 + Math.floor(Math.random() * 4);
+      var dir = Math.random() < 0.5 ? 'h' : 'v';
+      var pts = [[x, y]];
+
+      for (var s = 0; s < steps; s++){
+        var stepLen = (cellW + cellH) / 2 * (0.6 + Math.random() * 0.9);
+        if (dir === 'h'){ x += (Math.random() < 0.5 ? -1 : 1) * stepLen; }
+        else { y += (Math.random() < 0.5 ? -1 : 1) * stepLen; }
+        x = Math.max(20, Math.min(1900, x));
+        y = Math.max(20, Math.min(1060, y));
+        pts.push([x, y]);
+        dir = dir === 'h' ? 'v' : 'h';
+      }
+
+      var id = 'trace' + t;
+      var d = 'M' + pts.map(function(p){ return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' L');
+
+      var path = document.createElementNS(svgNS, 'path');
+      path.setAttribute('id', id);
+      path.setAttribute('d', d);
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke', COLORS.cyan);
+      path.setAttribute('stroke-width', (1 + Math.random() * 0.8).toFixed(2));
+      path.setAttribute('stroke-linecap', 'round');
+      path.setAttribute('stroke-linejoin', 'round');
+      path.setAttribute('opacity', (0.24 + Math.random() * 0.26).toFixed(2));
+      svg.appendChild(path);
+      traces.push({ id: id, pts: pts });
+
+      for (var bi = 1; bi < pts.length - 1 && viaBudget > 0; bi++){
+        if (Math.random() < 0.7){
+          viaBudget--;
+          var vx = pts[bi][0], vy = pts[bi][1];
+          var r = 2.4 + Math.random() * 1.6;
+          var c = document.createElementNS(svgNS, 'circle');
+          c.setAttribute('cx', vx.toFixed(1));
+          c.setAttribute('cy', vy.toFixed(1));
+          c.setAttribute('r', r.toFixed(1));
+          c.setAttribute('fill', COLORS.cyan);
+          c.setAttribute('opacity', '0.35');
+          svg.appendChild(c);
+
+          var begin = (Math.random() * 3).toFixed(2) + 's';
+
+          var animOp = document.createElementNS(svgNS, 'animate');
+          animOp.setAttribute('attributeName', 'opacity');
+          animOp.setAttribute('values', '0.18;0.75;0.18');
+          animOp.setAttribute('dur', '3s');
+          animOp.setAttribute('begin', begin);
+          animOp.setAttribute('repeatCount', 'indefinite');
+          c.appendChild(animOp);
+
+          var animR = document.createElementNS(svgNS, 'animate');
+          animR.setAttribute('attributeName', 'r');
+          animR.setAttribute('values', r.toFixed(1) + ';' + (r * 1.5).toFixed(1) + ';' + r.toFixed(1));
+          animR.setAttribute('dur', '3s');
+          animR.setAttribute('begin', begin);
+          animR.setAttribute('repeatCount', 'indefinite');
+          c.appendChild(animR);
+        }
+      }
+    }
+
+    var shuffled = traces.slice().sort(function(){ return Math.random() - 0.5; });
+    var chosen = shuffled.slice(0, packetCount);
+    chosen.forEach(function(tr){
+      var g = document.createElementNS(svgNS, 'g');
+
+      var cyanStreak = document.createElementNS(svgNS, 'rect');
+      cyanStreak.setAttribute('x', '-14');
+      cyanStreak.setAttribute('y', '-1.3');
+      cyanStreak.setAttribute('width', '11');
+      cyanStreak.setAttribute('height', '2.6');
+      cyanStreak.setAttribute('rx', '1.3');
+      cyanStreak.setAttribute('fill', COLORS.cyan);
+      cyanStreak.setAttribute('opacity', '0.85');
+      cyanStreak.setAttribute('filter', 'url(#packetGlow)');
+
+      var redStreak = document.createElementNS(svgNS, 'rect');
+      redStreak.setAttribute('x', '3');
+      redStreak.setAttribute('y', '-1.3');
+      redStreak.setAttribute('width', '11');
+      redStreak.setAttribute('height', '2.6');
+      redStreak.setAttribute('rx', '1.3');
+      redStreak.setAttribute('fill', '#d7282f');
+      redStreak.setAttribute('opacity', '0.7');
+      redStreak.setAttribute('filter', 'url(#packetGlow)');
+
+      g.appendChild(cyanStreak);
+      g.appendChild(redStreak);
+
+      // discrete keyPoints = abrupt jumps along the trace instead of a smooth glide
+      var n = 8 + Math.floor(Math.random() * 5);
+      var pts = [];
+      for (var k = 0; k < n; k++){ pts.push(Math.random()); }
+      pts.sort(function(a, b){ return a - b; });
+      if (Math.random() < 0.5){ pts.reverse(); }
+      var keyPoints = pts.map(function(p){ return p.toFixed(3); }).join(';');
+      var keyTimes = pts.map(function(_, i){ return (i / (n - 1)).toFixed(3); }).join(';');
+
+      var mm = document.createElementNS(svgNS, 'animateMotion');
+      var dur = (2.5 + Math.random() * 3.5).toFixed(2) + 's';
+      mm.setAttribute('dur', dur);
+      mm.setAttribute('repeatCount', 'indefinite');
+      mm.setAttribute('rotate', 'auto');
+      mm.setAttribute('calcMode', 'discrete');
+      mm.setAttribute('keyPoints', keyPoints);
+      mm.setAttribute('keyTimes', keyTimes);
+      var mpath = document.createElementNS(svgNS, 'mpath');
+      mpath.setAttributeNS(xlinkNS, 'href', '#' + tr.id);
+      mm.appendChild(mpath);
+      g.appendChild(mm);
+
+      // opacity flicker so the streak stutters instead of glowing steadily
+      var flick = document.createElementNS(svgNS, 'animate');
+      flick.setAttribute('attributeName', 'opacity');
+      flick.setAttribute('values', '1;0.15;1;1;0.4;1');
+      flick.setAttribute('dur', (0.6 + Math.random() * 0.8).toFixed(2) + 's');
+      flick.setAttribute('calcMode', 'discrete');
+      flick.setAttribute('repeatCount', 'indefinite');
+      g.appendChild(flick);
+
+      svg.appendChild(g);
+    });
+  }
+
+  buildCircuit();
+  renderQuestion();
+})();
+</script>
+
+</body>
+</html>

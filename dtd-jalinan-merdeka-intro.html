@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DTD Townhall 2026 - Jalinan Merdeka - Intro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Archivo+Black&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#001a70;
+    --gold:#ffd700;
+    --red:#d7282f;
+    --cyan:#22c0de;
+    --panel:#d7f7ff;
+    --paper:#040b18;
+    --green:#1f9d55;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    background:var(--paper);
+    overflow:hidden;
+    font-family:'Space Mono',monospace;
+  }
+
+  #stage{
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:1920px;
+    height:1080px;
+    background:var(--paper);
+    transform:translate(-50%,-50%) scale(min(calc(100vw / 1920px), calc(100vh / 1080px)));
+    transform-origin:center center;
+    overflow:hidden;
+  }
+
+  #bgImage{
+    position:absolute;
+    inset:0;
+    width:1920px;
+    height:1080px;
+    object-fit:cover;
+  }
+
+  #circuitSvg{
+    position:absolute;
+    inset:0;
+    width:1920px;
+    height:1080px;
+  }
+
+  .frame{
+    position:absolute;
+    inset:0;
+    width:1920px;
+    height:1080px;
+    background:rgba(6,20,34,.62);
+    border:1px solid rgba(34,192,222,.4);
+    border-radius:6px;
+    box-shadow:0 0 50px rgba(34,192,222,.18), inset 0 0 70px rgba(34,192,222,.08);
+  }
+
+  .corner{
+    position:absolute;
+    width:64px;
+    height:64px;
+    pointer-events:none;
+  }
+  .corner::before,
+  .corner::after{
+    content:'';
+    position:absolute;
+    background:var(--cyan);
+    box-shadow:0 0 10px rgba(34,192,222,.7);
+  }
+  .corner::before{ width:100%; height:4px; }
+  .corner::after{ width:4px; height:100%; }
+  .corner.tl{ top:-2px; left:-2px; }
+  .corner.tl::before,
+  .corner.tl::after{ top:0; left:0; }
+  .corner.tr{ top:-2px; right:-2px; }
+  .corner.tr::before,
+  .corner.tr::after{ top:0; right:0; }
+  .corner.bl{ bottom:-2px; left:-2px; }
+  .corner.bl::before,
+  .corner.bl::after{ bottom:0; left:0; }
+  .corner.br{ bottom:-2px; right:-2px; }
+  .corner.br::before,
+  .corner.br::after{ bottom:0; right:0; }
+
+  @keyframes cornerFlare{
+    0%,100%{ background:var(--cyan); box-shadow:0 0 10px rgba(34,192,222,.7); }
+    50%{ background:var(--gold); box-shadow:0 0 22px rgba(255,215,0,.9); }
+  }
+  .corner.flare::before,
+  .corner.flare::after{
+    animation:cornerFlare 1.4s ease-in-out;
+  }
+
+  [hidden]{ display:none !important; }
+
+  .content{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:100px 80px;
+    text-align:center;
+  }
+
+  .status-line{
+    font-family:'Archivo Black',sans-serif;
+    font-size:38px;
+    letter-spacing:5px;
+    color:var(--red);
+    text-transform:uppercase;
+    margin:0 0 34px 0;
+  }
+
+  .boot-log{
+    position:relative;
+    width:1440px;
+    min-height:700px;
+    background:rgba(6,20,34,.55);
+    border:1px solid rgba(34,192,222,.6);
+    border-radius:6px;
+    padding:56px 80px;
+    text-align:left;
+    box-shadow:0 0 24px rgba(34,192,222,.15), inset 0 0 34px rgba(34,192,222,.06);
+  }
+  .boot-log::before{
+    content:'';
+    position:absolute;
+    top:-1px;
+    left:24px;
+    width:120px;
+    height:3px;
+    background:var(--cyan);
+    box-shadow:0 0 8px rgba(34,192,222,.7);
+  }
+
+  .pillar-block{
+    margin-bottom:40px;
+    opacity:0;
+    transform:translateY(14px);
+  }
+  .pillar-block:last-child{ margin-bottom:0; }
+  .pillar-block.enter{
+    animation:pillarIn .5s ease-out forwards;
+  }
+  @keyframes pillarIn{
+    from{ opacity:0; transform:translateY(14px); }
+    to  { opacity:1; transform:translateY(0); }
+  }
+
+  .pillar-title{
+    font-family:'Archivo Black',sans-serif;
+    font-size:46px;
+    color:var(--gold);
+    text-shadow:0 0 14px rgba(255,215,0,.5);
+    margin:0 0 12px 0;
+  }
+  .pillar-title::before{
+    content:'> ';
+    color:var(--cyan);
+  }
+
+  .pillar-body{
+    font-family:'Space Mono',monospace;
+    font-size:30px;
+    line-height:1.55;
+    color:var(--panel);
+    margin:0;
+  }
+
+  .type-cursor{
+    display:inline-block;
+    margin-left:2px;
+    color:var(--cyan);
+    animation:cursorBlink 1s steps(1) infinite;
+  }
+  @keyframes cursorBlink{
+    0%, 55%   { opacity:1; }
+    56%, 100% { opacity:0; }
+  }
+
+  .cta-btn{
+    display:inline-block;
+    margin-top:50px;
+    font-family:'Archivo Black',sans-serif;
+    font-size:36px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    text-decoration:none;
+    color:var(--navy);
+    background:var(--gold);
+    border:2px solid var(--gold);
+    border-radius:6px;
+    padding:26px 56px;
+    box-shadow:0 0 24px rgba(255,215,0,.5);
+    opacity:0;
+    transform:scale(.9);
+    transition:background .15s ease, transform .1s ease, box-shadow .15s ease;
+  }
+  .cta-btn.enter{
+    animation:ctaIn .5s cubic-bezier(.16,1,.3,1) forwards;
+  }
+  .cta-btn:hover{
+    background:#fff2a8;
+    box-shadow:0 0 34px rgba(255,215,0,.75);
+  }
+  .cta-btn:active{
+    transform:scale(.96);
+  }
+  @keyframes ctaIn{
+    from{ opacity:0; transform:scale(.9); }
+    to  { opacity:1; transform:scale(1); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .pillar-block,
+    .cta-btn{
+      animation:none !important;
+      opacity:1 !important;
+      transform:none !important;
+    }
+    .type-cursor{
+      display:none !important;
+    }
+    .corner.flare::before,
+    .corner.flare::after{
+      animation:none !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <img id="bgImage" src="assets/glitch-bg.png" alt="">
+  <svg id="circuitSvg" viewBox="0 0 1920 1080"></svg>
+
+  <div class="frame">
+    <span class="corner tl"></span>
+    <span class="corner tr"></span>
+    <span class="corner bl"></span>
+    <span class="corner br"></span>
+
+    <div class="content" id="contentEl">
+      <div class="status-line" id="statusLine">Status: Initializing Jalinan Merdeka...</div>
+
+      <div class="boot-log" id="bootLog"></div>
+
+      <a class="cta-btn" id="ctaBtn" href="dtd-jalinan-merdeka-pin-unlock.html" hidden>Begin Verification &rarr;</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var stage = document.getElementById('stage');
+  function fitStage(){
+    var scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    stage.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
+  }
+  window.addEventListener('resize', fitStage);
+  fitStage();
+
+  var COLORS = { cyan: '#0cc0df', gold: '#ffd700' };
+
+  function buildCircuit(){
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var xlinkNS = 'http://www.w3.org/1999/xlink';
+    var svg = document.getElementById('circuitSvg');
+
+    var defs = document.createElementNS(svgNS, 'defs');
+    defs.innerHTML =
+      '<filter id="packetGlow" x="-200%" y="-200%" width="500%" height="500%">' +
+      '<feGaussianBlur stdDeviation="2.6" result="b"/>' +
+      '<feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>' +
+      '</filter>';
+    svg.appendChild(defs);
+
+    var reduceMotionSvg = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var traceCount = 40;
+    var viaMax = reduceMotionSvg ? 0 : 80;
+    var packetCount = reduceMotionSvg ? 0 : 14;
+    var cols = 16, rows = 9;
+    var cellW = 1920 / cols, cellH = 1080 / rows;
+    var viaBudget = viaMax;
+    var traces = [];
+
+    for (var t = 0; t < traceCount; t++){
+      var gx = Math.floor(Math.random() * cols);
+      var gy = Math.floor(Math.random() * rows);
+      var x = gx * cellW + (Math.random() - 0.5) * cellW * 0.6 + cellW / 2;
+      var y = gy * cellH + (Math.random() - 0.5) * cellH * 0.6 + cellH / 2;
+      var steps = 3 + Math.floor(Math.random() * 4);
+      var dir = Math.random() < 0.5 ? 'h' : 'v';
+      var pts = [[x, y]];
+
+      for (var s = 0; s < steps; s++){
+        var stepLen = (cellW + cellH) / 2 * (0.6 + Math.random() * 0.9);
+        if (dir === 'h'){ x += (Math.random() < 0.5 ? -1 : 1) * stepLen; }
+        else { y += (Math.random() < 0.5 ? -1 : 1) * stepLen; }
+        x = Math.max(20, Math.min(1900, x));
+        y = Math.max(20, Math.min(1060, y));
+        pts.push([x, y]);
+        dir = dir === 'h' ? 'v' : 'h';
+      }
+
+      var id = 'trace' + t;
+      var d = 'M' + pts.map(function(p){ return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' L');
+
+      var path = document.createElementNS(svgNS, 'path');
+      path.setAttribute('id', id);
+      path.setAttribute('d', d);
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke', COLORS.cyan);
+      path.setAttribute('stroke-width', (1 + Math.random() * 0.8).toFixed(2));
+      path.setAttribute('stroke-linecap', 'round');
+      path.setAttribute('stroke-linejoin', 'round');
+      path.setAttribute('opacity', (0.24 + Math.random() * 0.26).toFixed(2));
+      svg.appendChild(path);
+      traces.push({ id: id, pts: pts });
+
+      for (var bi = 1; bi < pts.length - 1 && viaBudget > 0; bi++){
+        if (Math.random() < 0.7){
+          viaBudget--;
+          var vx = pts[bi][0], vy = pts[bi][1];
+          var r = 2.4 + Math.random() * 1.6;
+          var c = document.createElementNS(svgNS, 'circle');
+          c.setAttribute('cx', vx.toFixed(1));
+          c.setAttribute('cy', vy.toFixed(1));
+          c.setAttribute('r', r.toFixed(1));
+          c.setAttribute('fill', COLORS.cyan);
+          c.setAttribute('opacity', '0.35');
+          svg.appendChild(c);
+
+          var begin = (Math.random() * 3).toFixed(2) + 's';
+
+          var animOp = document.createElementNS(svgNS, 'animate');
+          animOp.setAttribute('attributeName', 'opacity');
+          animOp.setAttribute('values', '0.18;0.75;0.18');
+          animOp.setAttribute('dur', '3s');
+          animOp.setAttribute('begin', begin);
+          animOp.setAttribute('repeatCount', 'indefinite');
+          c.appendChild(animOp);
+
+          var animR = document.createElementNS(svgNS, 'animate');
+          animR.setAttribute('attributeName', 'r');
+          animR.setAttribute('values', r.toFixed(1) + ';' + (r * 1.5).toFixed(1) + ';' + r.toFixed(1));
+          animR.setAttribute('dur', '3s');
+          animR.setAttribute('begin', begin);
+          animR.setAttribute('repeatCount', 'indefinite');
+          c.appendChild(animR);
+        }
+      }
+    }
+
+    var shuffled = traces.slice().sort(function(){ return Math.random() - 0.5; });
+    var chosen = shuffled.slice(0, packetCount);
+    chosen.forEach(function(tr){
+      var g = document.createElementNS(svgNS, 'g');
+
+      var cyanStreak = document.createElementNS(svgNS, 'rect');
+      cyanStreak.setAttribute('x', '-14');
+      cyanStreak.setAttribute('y', '-1.3');
+      cyanStreak.setAttribute('width', '11');
+      cyanStreak.setAttribute('height', '2.6');
+      cyanStreak.setAttribute('rx', '1.3');
+      cyanStreak.setAttribute('fill', COLORS.cyan);
+      cyanStreak.setAttribute('opacity', '0.85');
+      cyanStreak.setAttribute('filter', 'url(#packetGlow)');
+
+      var redStreak = document.createElementNS(svgNS, 'rect');
+      redStreak.setAttribute('x', '3');
+      redStreak.setAttribute('y', '-1.3');
+      redStreak.setAttribute('width', '11');
+      redStreak.setAttribute('height', '2.6');
+      redStreak.setAttribute('rx', '1.3');
+      redStreak.setAttribute('fill', '#d7282f');
+      redStreak.setAttribute('opacity', '0.7');
+      redStreak.setAttribute('filter', 'url(#packetGlow)');
+
+      g.appendChild(cyanStreak);
+      g.appendChild(redStreak);
+
+      var n = 8 + Math.floor(Math.random() * 5);
+      var pts = [];
+      for (var k = 0; k < n; k++){ pts.push(Math.random()); }
+      pts.sort(function(a, b){ return a - b; });
+      if (Math.random() < 0.5){ pts.reverse(); }
+      var keyPoints = pts.map(function(p){ return p.toFixed(3); }).join(';');
+      var keyTimes = pts.map(function(_, i){ return (i / (n - 1)).toFixed(3); }).join(';');
+
+      var mm = document.createElementNS(svgNS, 'animateMotion');
+      var dur = (2.5 + Math.random() * 3.5).toFixed(2) + 's';
+      mm.setAttribute('dur', dur);
+      mm.setAttribute('repeatCount', 'indefinite');
+      mm.setAttribute('rotate', 'auto');
+      mm.setAttribute('calcMode', 'discrete');
+      mm.setAttribute('keyPoints', keyPoints);
+      mm.setAttribute('keyTimes', keyTimes);
+      var mpath = document.createElementNS(svgNS, 'mpath');
+      mpath.setAttributeNS(xlinkNS, 'href', '#' + tr.id);
+      mm.appendChild(mpath);
+      g.appendChild(mm);
+
+      var flick = document.createElementNS(svgNS, 'animate');
+      flick.setAttribute('attributeName', 'opacity');
+      flick.setAttribute('values', '1;0.15;1;1;0.4;1');
+      flick.setAttribute('dur', (0.6 + Math.random() * 0.8).toFixed(2) + 's');
+      flick.setAttribute('calcMode', 'discrete');
+      flick.setAttribute('repeatCount', 'indefinite');
+      g.appendChild(flick);
+
+      svg.appendChild(g);
+    });
+  }
+
+  var PILLARS = [
+    {
+      title: 'JALINAN — Threads of Connection',
+      body: 'Cloud, AI, automation woven into one digital ecosystem — connecting every department, seamlessly.'
+    },
+    {
+      title: 'MERDEKA — Digital Liberation',
+      body: 'Freedom from manual work, legacy bottlenecks, red tape. AI and automation liberate our people for higher-value work.'
+    },
+    {
+      title: 'KESEJAHTERAAN DINIKMATI — Well-being Enjoyed',
+      body: 'Woven systems + liberated work = smooth operations, faster service, lasting peace of mind for all.'
+    }
+  ];
+
+  var bootLog = document.getElementById('bootLog');
+  var ctaBtn = document.getElementById('ctaBtn');
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function buildPillarEl(pillar){
+    var wrap = document.createElement('div');
+    wrap.className = 'pillar-block';
+    var title = document.createElement('p');
+    title.className = 'pillar-title';
+    title.textContent = pillar.title;
+    var body = document.createElement('p');
+    body.className = 'pillar-body';
+    body.textContent = pillar.body;
+    wrap.appendChild(title);
+    wrap.appendChild(body);
+    return wrap;
+  }
+
+  var audioCtx = null;
+  function ensureAudio(){
+    if (!audioCtx){
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new Ctx();
+    }
+    return audioCtx;
+  }
+
+  function playTypeTick(){
+    if (reduceMotion) return;
+    var ctx = ensureAudio();
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.type = 'square';
+    osc.frequency.value = 1200 + Math.random() * 200;
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    var t0 = ctx.currentTime;
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.linearRampToValueAtTime(0.05, t0 + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.03);
+    osc.start(t0);
+    osc.stop(t0 + 0.04);
+  }
+
+  function playCornerFlareChime(){
+    var ctx = ensureAudio();
+    [523.25, 659.25, 783.99].forEach(function(f, i){
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = f;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      var t0 = ctx.currentTime + i * 0.12;
+      gain.gain.setValueAtTime(0.0001, t0);
+      gain.gain.linearRampToValueAtTime(0.18, t0 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.3);
+      osc.start(t0);
+      osc.stop(t0 + 0.33);
+    });
+  }
+
+  function typeInto(el, text, speed, onDone){
+    var textNode = document.createTextNode('');
+    var cursor = document.createElement('span');
+    cursor.className = 'type-cursor';
+    cursor.textContent = '▌';
+    el.appendChild(textNode);
+    el.appendChild(cursor);
+    var i = 0;
+    (function step(){
+      if (i < text.length){
+        textNode.textContent += text.charAt(i);
+        if (text.charAt(i) !== ' ') playTypeTick();
+        i++;
+        setTimeout(step, speed);
+      } else {
+        cursor.remove();
+        if (onDone) onDone();
+      }
+    })();
+  }
+
+  function showCta(){
+    ctaBtn.hidden = false;
+    void ctaBtn.offsetWidth;
+    ctaBtn.classList.add('enter');
+    var corners = document.querySelectorAll('.corner');
+    corners.forEach(function(c){ c.classList.add('flare'); });
+    playCornerFlareChime();
+    setTimeout(function(){
+      corners.forEach(function(c){ c.classList.remove('flare'); });
+    }, 1400);
+  }
+
+  function renderPillars(){
+    if (reduceMotion){
+      PILLARS.forEach(function(p){
+        bootLog.appendChild(buildPillarEl(p));
+      });
+      showCta();
+      return;
+    }
+
+    var idx = 0;
+    function next(){
+      if (idx >= PILLARS.length){
+        setTimeout(showCta, 400);
+        return;
+      }
+      var pillar = PILLARS[idx];
+      var wrap = document.createElement('div');
+      wrap.className = 'pillar-block enter';
+      var titleEl = document.createElement('p');
+      titleEl.className = 'pillar-title';
+      var bodyEl = document.createElement('p');
+      bodyEl.className = 'pillar-body';
+      wrap.appendChild(titleEl);
+      wrap.appendChild(bodyEl);
+      bootLog.appendChild(wrap);
+      void wrap.offsetWidth;
+
+      setTimeout(function(){
+        typeInto(titleEl, pillar.title, 26, function(){
+          setTimeout(function(){
+            typeInto(bodyEl, pillar.body, 12, function(){
+              idx++;
+              setTimeout(next, 550);
+            });
+          }, 150);
+        });
+      }, 300);
+    }
+    next();
+  }
+
+  renderPillars();
+  buildCircuit();
+})();
+</script>
+
+</body>
+</html>
