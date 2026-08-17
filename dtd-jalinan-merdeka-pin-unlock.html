@@ -41,6 +41,26 @@
     overflow:hidden;
   }
 
+  #glitchLayer{
+    position:absolute;
+    inset:0;
+    width:1920px;
+    height:1080px;
+  }
+  #glitchLayer.glitch-active{
+    animation:glitchBurst .26s steps(1) both;
+  }
+  @keyframes glitchBurst{
+    0%   { filter:none; transform:translate(0,0); }
+    10%  { filter:url(#glitchFilter) contrast(1.15); transform:translate(-4px,1px); }
+    20%  { filter:none; transform:translate(3px,-1px); }
+    35%  { filter:url(#glitchFilter) contrast(1.3); transform:translate(-2px,0); }
+    50%  { filter:none; transform:translate(0,2px); }
+    65%  { filter:url(#glitchFilter); transform:translate(4px,0); }
+    80%  { filter:none; transform:translate(-1px,-1px); }
+    100% { filter:none; transform:translate(0,0); }
+  }
+
   #bgImage{
     position:absolute;
     inset:0;
@@ -132,44 +152,59 @@
     justify-content:center;
     gap:60px;
     background:var(--terminal-navy);
-    border:3px solid var(--cyan);
+    border:3px solid var(--gold);
     border-radius:6px;
-    padding:50px 110px;
+    padding:34px 110px;
     margin-bottom:24px;
-    min-width:1440px;
-    box-shadow:0 0 30px rgba(34,192,222,.35), 0 0 150px rgba(34,192,222,.16);
+    width:100%;
+    box-shadow:0 0 30px rgba(255,215,0,.35), 0 0 150px rgba(255,215,0,.16);
   }
 
   .bracket{
     font-family:'Space Mono',monospace;
     font-size:110px;
     line-height:1;
-    color:var(--cyan);
+    color:var(--gold);
     opacity:.55;
   }
 
   .slot{
+    position:relative;
     display:inline-block;
     width:160px;
+    height:110px;
     text-align:center;
     font-family:'Space Mono',monospace;
     font-weight:700;
     font-size:110px;
     line-height:1;
-    color:var(--cyan);
+    color:var(--gold);
     transition:color .25s ease, text-shadow .25s ease;
+  }
+  .slot:not(.filled){
+    color:transparent;
+  }
+  .slot:not(.filled)::after{
+    content:'';
+    position:absolute;
+    left:20%;
+    right:20%;
+    bottom:14px;
+    height:6px;
+    border-radius:3px;
+    background:var(--gold);
+    opacity:.55;
   }
 
   .slot.filled{
     color:var(--gold);
     text-shadow:0 0 18px rgba(255,215,0,.6);
-    animation:none;
   }
   @keyframes slotIdle{
     0%,100%{ opacity:.55; }
     50%{ opacity:1; }
   }
-  .slot:not(.filled){
+  .slot:not(.filled)::after{
     animation:slotIdle 2.2s ease-in-out infinite;
   }
 
@@ -185,7 +220,7 @@
 
   .quiz-card{
     position:relative;
-    width:1440px;
+    width:100%;
     background:rgba(0,12,58,.55);
     border:1px solid rgba(34,192,222,.6);
     border-radius:6px;
@@ -237,7 +272,8 @@
     width:12px;
     height:12px;
     border-radius:50%;
-    background:rgba(34,192,222,.25);
+    background:rgba(34,192,222,.45);
+    border:1px solid rgba(34,192,222,.6);
     transition:background .25s ease, box-shadow .25s ease;
   }
   .dot.active{
@@ -247,6 +283,40 @@
   .dot.done{
     background:var(--gold);
     box-shadow:0 0 6px rgba(255,215,0,.6);
+  }
+
+  .timer-bar{
+    width:100%;
+    height:10px;
+    background:rgba(34,192,222,.15);
+    border-radius:5px;
+    overflow:hidden;
+    margin-bottom:18px;
+  }
+  .timer-fill{
+    height:100%;
+    width:100%;
+    background:var(--cyan);
+    box-shadow:0 0 10px rgba(34,192,222,.6);
+  }
+  .timer-fill.urgent{
+    background:var(--red);
+    box-shadow:0 0 10px rgba(215,40,47,.7);
+  }
+  .timer-lockin{
+    font-family:'Archivo Black',sans-serif;
+    font-size:24px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    text-align:center;
+    color:var(--red);
+    text-shadow:0 0 14px rgba(215,40,47,.7);
+    margin:-6px 0 18px 0;
+    animation:lockinPulse .6s ease-in-out infinite;
+  }
+  @keyframes lockinPulse{
+    0%,100%{ transform:scale(1); opacity:1; }
+    50%{ transform:scale(1.06); opacity:.75; }
   }
 
   .question{
@@ -269,6 +339,9 @@
   }
 
   .answer-btn{
+    display:flex;
+    align-items:center;
+    gap:20px;
     font-family:'Archivo Black',sans-serif;
     font-size:28px;
     text-transform:uppercase;
@@ -281,6 +354,16 @@
     cursor:pointer;
     transition:background .15s ease, transform .1s ease, box-shadow .15s ease;
   }
+  .gesture-tag{
+    flex-shrink:0;
+    font-family:'Space Mono',monospace;
+    font-size:16px;
+    letter-spacing:1.5px;
+    color:var(--navy);
+    background:var(--cyan);
+    border-radius:20px;
+    padding:6px 14px;
+  }
   .answer-btn.enter{ animation:fadeSlideIn .35s ease-out both; }
   .answer-btn:hover:not(:disabled){
     background:#001850;
@@ -288,6 +371,10 @@
   }
   .answer-btn:active:not(:disabled){
     transform:scale(.97);
+  }
+  .answer-btn:focus-visible{
+    outline:3px solid var(--cyan);
+    outline-offset:3px;
   }
   .answer-btn:disabled{
     cursor:default;
@@ -358,8 +445,8 @@
     position:relative;
     font-family:'Archivo Black',sans-serif;
     font-size:120px;
-    color:var(--gold);
-    text-shadow:4px 4px 0 var(--red);
+    color:var(--cyan);
+    text-shadow:4px 4px 0 var(--red), 0 0 18px rgba(34,192,222,.85), 0 0 40px rgba(34,192,222,.55);
     letter-spacing:2px;
     margin:0;
     animation:successPop .6s cubic-bezier(.16,1,.3,1) both;
@@ -489,6 +576,8 @@
     .answer-btn.enter,
     .corner.flare::before,
     .corner.flare::after{ animation:none !important; }
+    .timer-lockin{ animation:none !important; }
+    .timer-fill{ transition:none !important; }
     .success-title, .success-sub{ opacity:1; transform:none; }
     .success-title::before,
     .success-title::after{ content:none; }
@@ -497,53 +586,62 @@
     .slot, .answer-btn{ transition:none; }
     .answer-btn:active{ transform:none; }
     .trivia{ transition:none; }
+    #glitchLayer.glitch-active{
+      animation:none !important;
+      filter:none !important;
+      transform:none !important;
+    }
   }
 </style>
 </head>
 <body>
 
 <div id="stage">
-  <img id="bgImage" src="assets/glitch-bg.png" alt="">
-  <svg id="circuitSvg" viewBox="0 0 1920 1080"></svg>
+  <div id="glitchLayer">
+    <img id="bgImage" src="assets/glitch-bg.png" alt="">
+    <svg id="circuitSvg" viewBox="0 0 1920 1080"></svg>
 
-  <div class="frame">
-    <span class="corner tl"></span>
-    <span class="corner tr"></span>
-    <span class="corner bl"></span>
-    <span class="corner br"></span>
-    <div id="burstLayer"></div>
+    <div class="frame">
+      <span class="corner tl"></span>
+      <span class="corner tr"></span>
+      <span class="corner bl"></span>
+      <span class="corner br"></span>
+      <div id="burstLayer"></div>
 
-    <div class="content" id="contentEl">
-      <div class="status-line" id="statusLine">Status: Awaiting Verification</div>
+      <div class="content" id="contentEl">
+        <div class="status-line" id="statusLine">Status: Awaiting Verification</div>
 
-      <div class="terminal" id="terminalEl">
-        <span class="bracket">[</span>
-        <span class="slot" id="slot0">_</span>
-        <span class="slot" id="slot1">_</span>
-        <span class="slot" id="slot2">_</span>
-        <span class="slot" id="slot3">_</span>
-        <span class="bracket">]</span>
-      </div>
+        <div class="terminal" id="terminalEl">
+          <span class="bracket">[</span>
+          <span class="slot" id="slot0">_</span>
+          <span class="slot" id="slot1">_</span>
+          <span class="slot" id="slot2">_</span>
+          <span class="slot" id="slot3">_</span>
+          <span class="bracket">]</span>
+        </div>
 
-      <div class="quiz-card" id="quizCard">
-        <div class="progress-row">
-          <div class="progress-label" id="progressLabel">Question 1 of 4</div>
-          <div class="progress-dots" id="progressDots">
-            <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <div class="quiz-card" id="quizCard">
+          <div class="progress-row">
+            <div class="progress-label" id="progressLabel">Question 1 of 4</div>
+            <div class="progress-dots" id="progressDots">
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+          </div>
+          <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
+          <div class="timer-lockin" id="timerLockin" hidden>Lock It In!</div>
+          <div class="question" id="questionText"></div>
+          <div class="answers" id="answersEl"></div>
+          <div class="feedback" id="feedbackEl" aria-live="polite"></div>
+          <div class="trivia" id="triviaEl" aria-live="polite">
+            <div class="trivia-label">Did You Know</div>
+            <div class="trivia-text" id="triviaText"></div>
           </div>
         </div>
-        <div class="question" id="questionText"></div>
-        <div class="answers" id="answersEl"></div>
-        <div class="feedback" id="feedbackEl"></div>
-        <div class="trivia" id="triviaEl">
-          <div class="trivia-label">Did You Know</div>
-          <div class="trivia-text" id="triviaText"></div>
-        </div>
-      </div>
 
-      <div class="success" id="successState" hidden>
-        <div class="success-title" id="successTitle" data-text="ACCESS GRANTED">ACCESS GRANTED</div>
-        <div class="success-sub">Jalinan Merdeka activated</div>
+        <div class="success" id="successState" hidden>
+          <div class="success-title" id="successTitle" data-text="ACCESS GRANTED">ACCESS GRANTED</div>
+          <div class="success-sub">Jalinan Merdeka activated</div>
+        </div>
       </div>
     </div>
   </div>
@@ -600,7 +698,50 @@
     }
   ];
 
-  var qIndex = 0;
+  // one backup per original question, same digit, swapped in permanently after a wrong answer
+  var BACKUP_QUESTIONS = [
+    {
+      q: 'Which country administered Malaya before independence?',
+      choices: [
+        { text: 'British Empire', correct: true },
+        { text: 'Dutch East Indies', correct: false }
+      ],
+      digit: '1',
+      trivia: 'British colonial administration over Malaya ended with independence in 1957.'
+    },
+    {
+      q: 'What is the historic square where Merdeka Day parades are still held today?',
+      choices: [
+        { text: 'Dataran Merdeka', correct: true },
+        { text: 'Padang Besar', correct: false }
+      ],
+      digit: '9',
+      trivia: "Dataran Merdeka (Merdeka Square) stands where the Selangor Club Padang once hosted the quiet midnight flag-raising."
+    },
+    {
+      q: 'Which political alliance did Tunku Abdul Rahman lead to victory in the 1955 general election?',
+      choices: [
+        { text: 'Alliance Party', correct: true },
+        { text: 'Barisan Nasional', correct: false }
+      ],
+      digit: '5',
+      trivia: 'The Alliance (UMNO-MCA-MIC) later evolved into Barisan Nasional in 1973.'
+    },
+    {
+      q: "On what date is Malaysia's independence celebrated each year?",
+      choices: [
+        { text: '31 August', correct: true },
+        { text: '16 September', correct: false }
+      ],
+      digit: '7',
+      trivia: '31 August marks Merdeka Day 1957; 16 September marks Malaysia Day, the 1963 formation of Malaysia.'
+    }
+  ];
+
+  var activeQuestions = QUESTIONS.slice();
+  var backupAvailable = [true, true, true, true];
+  var current = 0;
+
   var statusLine   = document.getElementById('statusLine');
   var terminalEl   = document.getElementById('terminalEl');
   var contentEl    = document.getElementById('contentEl');
@@ -614,24 +755,84 @@
   var feedbackEl   = document.getElementById('feedbackEl');
   var triviaEl     = document.getElementById('triviaEl');
   var triviaText   = document.getElementById('triviaText');
+  var timerFill    = document.getElementById('timerFill');
+  var timerLockin  = document.getElementById('timerLockin');
+
+  var TIMER_SECONDS = 8;
+  var timerUrgentTimeout = null;
+  var timerLockinTimeout = null;
+
+  function stopTimer(){
+    clearTimeout(timerUrgentTimeout);
+    clearTimeout(timerLockinTimeout);
+  }
+
+  function startTimer(){
+    stopTimer();
+    timerLockin.hidden = true;
+    timerFill.classList.remove('urgent');
+    timerFill.style.transition = 'none';
+    timerFill.style.width = '100%';
+    void timerFill.offsetWidth;
+    timerFill.style.transition = 'width ' + TIMER_SECONDS + 's linear';
+    timerFill.style.width = '0%';
+    timerUrgentTimeout = setTimeout(function(){
+      timerFill.classList.add('urgent');
+    }, (TIMER_SECONDS - 3) * 1000);
+    timerLockinTimeout = setTimeout(function(){
+      timerLockin.hidden = false;
+      playTimeUp();
+    }, TIMER_SECONDS * 1000);
+  }
+
+  function freezeTimer(){
+    stopTimer();
+    var currentWidth = getComputedStyle(timerFill).width;
+    timerFill.style.transition = 'none';
+    timerFill.style.width = currentWidth;
+  }
 
   function renderQuestion(){
-    var item = QUESTIONS[qIndex];
-    progressLabel.textContent = 'Question ' + (qIndex + 1) + ' of 4';
+    var item = activeQuestions[current];
+    progressLabel.textContent = 'Question ' + (current + 1) + ' of 4';
     var dots = progressDots.querySelectorAll('.dot');
     for (var d = 0; d < dots.length; d++){
-      dots[d].className = 'dot' + (d < qIndex ? ' done' : d === qIndex ? ' active' : '');
+      dots[d].className = 'dot' + (d < current ? ' done' : d === current ? ' active' : '');
     }
     questionText.textContent = item.q;
     questionText.classList.remove('enter');
     void questionText.offsetWidth;
     questionText.classList.add('enter');
     answersEl.innerHTML = '';
-    item.choices.forEach(function(choice, idx){
+    var GESTURE_PAIRS = [
+      ['Stand Up', 'Stay Seated'],
+      ['Raise Left Hand', 'Raise Right Hand'],
+      ['Clap Your Hands', 'Stomp Your Feet'],
+      ['Wave Both Arms', 'Cross Your Arms'],
+      ['Shout "Merdeka!"', 'Stay Silent']
+    ];
+    var GESTURES = GESTURE_PAIRS[Math.floor(Math.random() * GESTURE_PAIRS.length)];
+    var shuffledChoices = item.choices.slice();
+    for (var sc = shuffledChoices.length - 1; sc > 0; sc--){
+      var swapIdx = Math.floor(Math.random() * (sc + 1));
+      var tmp = shuffledChoices[sc];
+      shuffledChoices[sc] = shuffledChoices[swapIdx];
+      shuffledChoices[swapIdx] = tmp;
+    }
+    shuffledChoices.forEach(function(choice, idx){
       var btn = document.createElement('button');
       btn.className = 'answer-btn enter';
       btn.style.animationDelay = (idx * 0.08).toFixed(2) + 's';
-      btn.textContent = choice.text;
+
+      var tag = document.createElement('span');
+      tag.className = 'gesture-tag';
+      tag.textContent = GESTURES[idx];
+      btn.appendChild(tag);
+
+      var label = document.createElement('span');
+      label.textContent = choice.text;
+      btn.appendChild(label);
+
       btn.addEventListener('click', function(){ handleAnswer(choice, btn); });
       answersEl.appendChild(btn);
     });
@@ -639,6 +840,7 @@
     feedbackEl.className = 'feedback';
     triviaText.textContent = '';
     triviaEl.className = 'trivia';
+    startTimer();
   }
 
   function setButtonsDisabled(state){
@@ -658,23 +860,24 @@
   }
 
   function showTrivia(){
-    triviaText.textContent = QUESTIONS[qIndex].trivia;
+    triviaText.textContent = activeQuestions[current].trivia;
     triviaEl.className = 'trivia shown';
   }
 
   function handleAnswer(choice, btn){
+    freezeTimer();
     setButtonsDisabled(true);
     if (choice.correct){
       playCorrect();
       btn.classList.add('flash-correct');
       feedbackEl.textContent = 'Correct · Digit Unlocked';
       feedbackEl.className = 'feedback feedback-correct';
-      fillSlot(qIndex, QUESTIONS[qIndex].digit);
+      fillSlot(current, activeQuestions[current].digit);
       showTrivia();
       surge();
       setTimeout(function(){
-        qIndex++;
-        if (qIndex >= QUESTIONS.length){
+        current++;
+        if (current >= QUESTIONS.length){
           unlockSystem();
         } else {
           renderQuestion();
@@ -684,9 +887,15 @@
       playWrong();
       btn.classList.add('flash-wrong');
       terminalEl.classList.add('flash-wrong-anim');
-      feedbackEl.textContent = 'Not Quite · Try Again';
-      feedbackEl.className = 'feedback feedback-wrong';
+      triggerGlitch();
       showTrivia();
+      var swapped = backupAvailable[current];
+      if (swapped){
+        activeQuestions[current] = BACKUP_QUESTIONS[current];
+        backupAvailable[current] = false;
+      }
+      feedbackEl.textContent = swapped ? 'Not Quite · Question Swapped' : 'Not Quite · Try Again';
+      feedbackEl.className = 'feedback feedback-wrong';
       setTimeout(function(){
         terminalEl.classList.remove('flash-wrong-anim');
         renderQuestion();
@@ -704,7 +913,7 @@
     var scaleY = layer.offsetHeight / layerRect.height;
     var cx = (termRect.left + termRect.width / 2 - layerRect.left) * scaleX;
     var cy = (termRect.top + termRect.height / 2 - layerRect.top) * scaleY;
-    var colors = ['#ffd700', '#22c0de', '#d7282f'];
+    var colors = [COLORS.gold, COLORS.cyan, COLORS.red];
     for (var i = 0; i < 32; i++){
       var p = document.createElement('span');
       p.className = 'burst-p';
@@ -768,13 +977,19 @@
 
   function playCorrect(){ beep(760, 0.1, 'square'); }
   function playWrong(){ beep(150, 0.4, 'sawtooth', 0, 0.25); }
+  function playTimeUp(){ beep(220, 0.15, 'square', 0, 0.2); beep(220, 0.15, 'square', 0.18, 0.2); }
   function playUnlock(){
     var notes = [523.25, 659.25, 783.99, 1046.50];
     notes.forEach(function(f, i){ beep(f, 0.28, 'sine', i * 0.16, 0.22); });
   }
 
   // ---------- circuit-weave background ----------
-  var COLORS = { cyan: '#0cc0df', gold: '#ffd700' };
+  var rootVars = getComputedStyle(document.documentElement);
+  var COLORS = {
+    cyan: rootVars.getPropertyValue('--cyan').trim(),
+    gold: rootVars.getPropertyValue('--gold').trim(),
+    red: rootVars.getPropertyValue('--red').trim()
+  };
 
   function buildCircuit(){
     var svgNS = 'http://www.w3.org/2000/svg';
@@ -786,6 +1001,17 @@
       '<filter id="packetGlow" x="-200%" y="-200%" width="500%" height="500%">' +
       '<feGaussianBlur stdDeviation="2.6" result="b"/>' +
       '<feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>' +
+      '</filter>' +
+      '<filter id="glitchFilter" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">' +
+      '<feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="rCh"/>' +
+      '<feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="gCh"/>' +
+      '<feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="bCh"/>' +
+      '<feOffset in="rCh" dx="-6" dy="0" result="rOff"/>' +
+      '<feOffset in="bCh" dx="6" dy="1" result="bOff"/>' +
+      '<feTurbulence type="fractalNoise" baseFrequency="0 0.09" numOctaves="1" seed="4" result="noise"/>' +
+      '<feDisplacementMap in="gCh" in2="noise" scale="22" xChannelSelector="R" yChannelSelector="G" result="gWarp"/>' +
+      '<feBlend in="rOff" in2="bOff" mode="screen" result="rb"/>' +
+      '<feBlend in="rb" in2="gWarp" mode="screen"/>' +
       '</filter>';
     svg.appendChild(defs);
 
@@ -887,7 +1113,7 @@
       redStreak.setAttribute('width', '11');
       redStreak.setAttribute('height', '2.6');
       redStreak.setAttribute('rx', '1.3');
-      redStreak.setAttribute('fill', '#d7282f');
+      redStreak.setAttribute('fill', COLORS.red);
       redStreak.setAttribute('opacity', '0.7');
       redStreak.setAttribute('filter', 'url(#packetGlow)');
 
@@ -929,8 +1155,28 @@
     });
   }
 
+  var glitchLayer = document.getElementById('glitchLayer');
+  function triggerGlitch(){
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    glitchLayer.classList.remove('glitch-active');
+    void glitchLayer.offsetWidth;
+    glitchLayer.classList.add('glitch-active');
+    setTimeout(function(){
+      glitchLayer.classList.remove('glitch-active');
+    }, 260);
+  }
+  function scheduleGlitch(){
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var delay = 4000 + Math.random() * 6000;
+    setTimeout(function(){
+      triggerGlitch();
+      scheduleGlitch();
+    }, delay);
+  }
+
   buildCircuit();
   renderQuestion();
+  scheduleGlitch();
 })();
 </script>
 
