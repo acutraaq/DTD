@@ -840,10 +840,12 @@
       var btn = document.createElement('button');
       btn.className = 'answer-btn enter';
       btn.style.animationDelay = (idx * 0.08).toFixed(2) + 's';
+      btn.setAttribute('aria-label', choice.text);
 
       var tag = document.createElement('span');
       tag.className = 'gesture-tag';
       tag.textContent = GESTURES[idx];
+      tag.setAttribute('aria-hidden', 'true');
       btn.appendChild(tag);
 
       var label = document.createElement('span');
