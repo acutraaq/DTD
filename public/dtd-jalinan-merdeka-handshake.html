@@ -219,6 +219,10 @@
   .scan-btn{
     position:absolute;
     inset:24px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
     border-radius:50%;
     border:2px solid rgba(34,192,222,.5);
     background:rgba(0,20,50,.55);
@@ -554,7 +558,7 @@
     ringFill.style.stroke = p >= 1 ? COLORS.gold : COLORS.cyan;
     var pct = Math.round(p * 100);
     readout.textContent = pct + '%';
-    scanSub.textContent = charging ? 'Scanning' : (p > 0 ? 'Hold' : 'Hold');
+    scanSub.textContent = charging ? 'Scanning' : 'Hold';
     if (pct >= 50 && !announcedHalf){
       announcedHalf = true;
       srAnnounce.textContent = 'Verification halfway complete.';
