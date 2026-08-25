@@ -822,11 +822,14 @@
     questionText.classList.add('enter');
     answersEl.innerHTML = '';
     // escalates in energy each question, peaking on the final one
+    // built around the small Jalur Gemilang flag each audience member is given —
+    // each pair is one "waving/up" gesture vs one "still/held" gesture, so the
+    // emcee can read the room's majority at a glance from the stage
     var GESTURE_TIERS = [
-      ['Hand Over Heart', 'Nod in Salute'],
-      ['Raise Your Fist High', 'Point to the Jalur Gemilang'],
-      ['Wave an Imaginary Flag', 'Stomp Your Feet for Merdeka'],
-      ['Shout "Merdeka!" Three Times', 'Stand and Cheer for Malaysia']
+      ['Pegang Bendera di Dada', 'Angkat Bendera Tinggi-tinggi'],
+      ['Kibas Bendera Perlahan-lahan', 'Genggam Bendera Rapat ke Dada'],
+      ['Berdiri Sambil Angkat Bendera', 'Kekal Duduk, Bendera di Dada'],
+      ['Berdiri, Kibas Bendera, Laung "Merdeka!"', 'Berdiri Diam, Bendera di Dada']
     ];
     var GESTURES = GESTURE_TIERS[Math.min(current, GESTURE_TIERS.length - 1)];
     var shuffledChoices = item.choices.slice();
