@@ -1,0 +1,8 @@
+{
+  "routes": [
+    {
+      "route": "/",
+      "rewrite": "/dtd-jalinan-merdeka-intro.html"
+    }
+  ]
+}

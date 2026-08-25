@@ -126,6 +126,31 @@
 
   [hidden]{ display:none !important; }
 
+  .mute-btn{
+    position:absolute;
+    top:24px;
+    right:24px;
+    z-index:10;
+    font-family:'Space Mono',monospace;
+    font-size:16px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--cyan);
+    background:rgba(6,20,34,.7);
+    border:1px solid rgba(34,192,222,.6);
+    border-radius:20px;
+    padding:8px 18px;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+  }
+  .mute-btn:hover{
+    background:rgba(34,192,222,.15);
+  }
+  .mute-btn[aria-pressed="true"]{
+    color:var(--red);
+    border-color:rgba(215,40,47,.6);
+  }
+
   .content{
     position:absolute;
     inset:0;
@@ -607,6 +632,9 @@
       </div>
     </div>
   </div>
+
+  <button type="button" class="mute-btn" id="muteBtn" aria-pressed="false">Mute</button>
+  <audio id="bgmAudio" src="assets/bgm.mp3" loop preload="auto"></audio>
 </div>
 
 <script>
@@ -880,6 +908,34 @@
     }
     return audioCtx;
   }
+
+  // ---------- background music ----------
+  var BGM_MUTE_KEY = 'jm-bgm-muted';
+  var bgmAudio = document.getElementById('bgmAudio');
+  var muteBtn = document.getElementById('muteBtn');
+  var bgmMuted = localStorage.getItem(BGM_MUTE_KEY) === '1';
+  bgmAudio.volume = 0.35;
+  bgmAudio.muted = bgmMuted;
+
+  function updateMuteBtn(){
+    muteBtn.textContent = bgmMuted ? 'Unmute' : 'Mute';
+    muteBtn.setAttribute('aria-pressed', bgmMuted ? 'true' : 'false');
+  }
+  updateMuteBtn();
+
+  function playBgm(){
+    if (bgmAudio.paused) bgmAudio.play().catch(function(){});
+  }
+  window.addEventListener('pointerdown', playBgm, { once:true });
+  window.addEventListener('keydown', playBgm, { once:true });
+
+  muteBtn.addEventListener('click', function(){
+    bgmMuted = !bgmMuted;
+    bgmAudio.muted = bgmMuted;
+    localStorage.setItem(BGM_MUTE_KEY, bgmMuted ? '1' : '0');
+    updateMuteBtn();
+    if (!bgmMuted) playBgm();
+  });
 
   function beep(freq, dur, type, startDelay, gainPeak){
     startDelay = startDelay || 0;
