@@ -13,9 +13,11 @@
     --gold:#ffd700;
     --red:#d7282f;
     --cyan:#22c0de;
+    --azure:#0080ff;
     --panel:#d7f7ff;
     --paper:#040b18;
     --green:#1f9d55;
+    --term-green:#39ff6a;
     --terminal-navy:#000c3a;
   }
   *{box-sizing:border-box;}
@@ -48,16 +50,16 @@
     height:1080px;
   }
   #glitchLayer.glitch-active{
-    animation:glitchBurst .26s steps(1) both;
+    animation:glitchBurst .18s steps(1) both;
   }
   @keyframes glitchBurst{
     0%   { filter:none; transform:translate(0,0); }
-    10%  { filter:url(#glitchFilter) contrast(1.15); transform:translate(-4px,1px); }
-    20%  { filter:none; transform:translate(3px,-1px); }
-    35%  { filter:url(#glitchFilter) contrast(1.3); transform:translate(-2px,0); }
-    50%  { filter:none; transform:translate(0,2px); }
-    65%  { filter:url(#glitchFilter); transform:translate(4px,0); }
-    80%  { filter:none; transform:translate(-1px,-1px); }
+    10%  { filter:url(#glitchFilter) contrast(1.06); transform:translate(-2px,0); }
+    20%  { filter:none; transform:translate(1px,-1px); }
+    35%  { filter:url(#glitchFilter) contrast(1.1); transform:translate(-1px,0); }
+    50%  { filter:none; transform:translate(0,1px); }
+    65%  { filter:url(#glitchFilter); transform:translate(2px,0); }
+    80%  { filter:none; transform:translate(-1px,0); }
     100% { filter:none; transform:translate(0,0); }
   }
 
@@ -132,21 +134,31 @@
     right:24px;
     z-index:10;
     font-family:'Space Mono',monospace;
-    font-size:16px;
+    font-size:13px;
     letter-spacing:1.5px;
     text-transform:uppercase;
-    color:var(--cyan);
-    background:rgba(6,20,34,.7);
-    border:1px solid rgba(34,192,222,.6);
+    color:rgba(215,240,255,.5);
+    background:transparent;
+    border:1px solid rgba(215,240,255,.2);
     border-radius:20px;
-    padding:8px 18px;
+    padding:6px 14px;
     cursor:pointer;
-    transition:background .15s ease, color .15s ease;
+    opacity:.55;
+    transition:opacity .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
   }
-  .mute-btn:hover{
+  .mute-btn:hover,
+  .mute-btn:focus-visible{
+    opacity:1;
+    color:var(--cyan);
     background:rgba(34,192,222,.15);
+    border-color:rgba(34,192,222,.6);
   }
   .mute-btn[aria-pressed="true"]{
+    color:rgba(215,40,47,.6);
+    border-color:rgba(215,40,47,.3);
+  }
+  .mute-btn[aria-pressed="true"]:hover,
+  .mute-btn[aria-pressed="true"]:focus-visible{
     color:var(--red);
     border-color:rgba(215,40,47,.6);
   }
@@ -203,7 +215,7 @@
     font-weight:700;
     font-size:110px;
     line-height:1;
-    color:var(--gold);
+    color:var(--term-green);
     transition:color .25s ease, text-shadow .25s ease;
   }
   .slot:not(.filled){
@@ -217,13 +229,13 @@
     bottom:14px;
     height:6px;
     border-radius:3px;
-    background:var(--gold);
+    background:var(--term-green);
     opacity:.55;
   }
 
   .slot.filled{
-    color:var(--gold);
-    text-shadow:0 0 18px rgba(255,215,0,.6);
+    color:var(--term-green);
+    text-shadow:0 0 18px rgba(57,255,106,.6);
   }
   @keyframes slotIdle{
     0%,100%{ opacity:.55; }
@@ -398,6 +410,30 @@
   .feedback-correct{ color:var(--green); background:rgba(31,157,85,.12); border:1px solid rgba(31,157,85,.4); }
   .feedback-wrong{ color:var(--red); background:rgba(215,40,47,.12); border:1px solid rgba(215,40,47,.4); }
 
+  .continue-btn{
+    display:block;
+    width:100%;
+    margin-top:16px;
+    font-family:'Archivo Black',sans-serif;
+    font-size:22px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:#fff;
+    background:var(--azure);
+    border:2px solid var(--azure);
+    border-radius:6px;
+    padding:16px 24px;
+    cursor:pointer;
+    transition:background .15s ease, transform .1s ease, box-shadow .15s ease;
+  }
+  .continue-btn.enter{ animation:fadeSlideIn .35s ease-out both; }
+  .continue-btn:hover{ background:#33a0ff; box-shadow:0 0 16px rgba(0,128,255,.5); }
+  .continue-btn:active{ transform:scale(.97); }
+  .continue-btn:focus-visible{
+    outline:3px solid var(--cyan);
+    outline-offset:3px;
+  }
+
   .trivia{
     max-height:0;
     opacity:0;
@@ -437,7 +473,7 @@
     font-family:'Archivo Black',sans-serif;
     font-size:120px;
     color:var(--cyan);
-    text-shadow:4px 4px 0 var(--red), 0 0 18px rgba(34,192,222,.85), 0 0 40px rgba(34,192,222,.55);
+    text-shadow:2px 2px 0 var(--red), 0 0 12px rgba(34,192,222,.6), 0 0 24px rgba(34,192,222,.35);
     letter-spacing:2px;
     margin:0;
     animation:successPop .6s cubic-bezier(.16,1,.3,1) both;
@@ -460,60 +496,61 @@
     animation:glitchLayerRed .9s steps(1,end) infinite;
   }
   @keyframes glitchLayerCyan{
-    0%   { clip-path:inset(0 0 85% 0);  transform:translate(0,0);      opacity:.2; }
-    8%   { clip-path:inset(10% 0 60% 0);transform:translate(-9px,-3px);opacity:1; }
-    16%  { clip-path:inset(55% 0 15% 0);transform:translate(9px,2px);  opacity:1; }
-    24%  { clip-path:inset(20% 0 50% 0);transform:translate(-7px,3px); opacity:.9; }
-    32%  { clip-path:inset(70% 0 5% 0); transform:translate(8px,-2px); opacity:1; }
-    45%  { clip-path:inset(30% 0 40% 0);transform:translate(-5px,0);   opacity:.7; }
-    60%  { clip-path:inset(0 0 0 0);    transform:translate(4px,2px);  opacity:.5; }
-    75%  { clip-path:inset(45% 0 30% 0);transform:translate(-8px,-2px);opacity:.85; }
-    88%  { clip-path:inset(15% 0 65% 0);transform:translate(6px,1px);  opacity:.6; }
-    100% { clip-path:inset(0 0 85% 0);  transform:translate(0,0);      opacity:.2; }
+    0%   { clip-path:inset(0 0 85% 0);  transform:translate(0,0);      opacity:.15; }
+    8%   { clip-path:inset(10% 0 60% 0);transform:translate(-3px,-1px);opacity:.5; }
+    16%  { clip-path:inset(55% 0 15% 0);transform:translate(3px,1px);  opacity:.5; }
+    24%  { clip-path:inset(20% 0 50% 0);transform:translate(-2px,1px); opacity:.4; }
+    32%  { clip-path:inset(70% 0 5% 0); transform:translate(3px,-1px); opacity:.5; }
+    45%  { clip-path:inset(30% 0 40% 0);transform:translate(-2px,0);   opacity:.3; }
+    60%  { clip-path:inset(0 0 0 0);    transform:translate(1px,1px);  opacity:.2; }
+    75%  { clip-path:inset(45% 0 30% 0);transform:translate(-2px,-1px);opacity:.4; }
+    88%  { clip-path:inset(15% 0 65% 0);transform:translate(2px,0);    opacity:.25; }
+    100% { clip-path:inset(0 0 85% 0);  transform:translate(0,0);      opacity:.15; }
   }
   @keyframes glitchLayerRed{
-    0%   { clip-path:inset(80% 0 0 0); transform:translate(0,0);      opacity:.2; }
-    10%  { clip-path:inset(50% 0 20% 0);transform:translate(9px,3px);  opacity:1; }
-    18%  { clip-path:inset(10% 0 65% 0);transform:translate(-8px,-2px);opacity:1; }
-    28%  { clip-path:inset(60% 0 10% 0);transform:translate(7px,-3px); opacity:.9; }
-    38%  { clip-path:inset(5% 0 75% 0); transform:translate(-9px,2px); opacity:1; }
-    50%  { clip-path:inset(40% 0 30% 0);transform:translate(5px,0);    opacity:.6; }
-    65%  { clip-path:inset(0 0 0 0);    transform:translate(-4px,-2px);opacity:.5; }
-    78%  { clip-path:inset(35% 0 40% 0);transform:translate(8px,2px);  opacity:.9; }
-    90%  { clip-path:inset(70% 0 10% 0);transform:translate(-6px,1px); opacity:.6; }
-    100% { clip-path:inset(80% 0 0 0);  transform:translate(0,0);      opacity:.2; }
+    0%   { clip-path:inset(80% 0 0 0); transform:translate(0,0);      opacity:.15; }
+    10%  { clip-path:inset(50% 0 20% 0);transform:translate(3px,1px);  opacity:.5; }
+    18%  { clip-path:inset(10% 0 65% 0);transform:translate(-3px,-1px);opacity:.5; }
+    28%  { clip-path:inset(60% 0 10% 0);transform:translate(2px,-1px); opacity:.4; }
+    38%  { clip-path:inset(5% 0 75% 0); transform:translate(-3px,1px); opacity:.5; }
+    50%  { clip-path:inset(40% 0 30% 0);transform:translate(2px,0);    opacity:.3; }
+    65%  { clip-path:inset(0 0 0 0);    transform:translate(-1px,-1px);opacity:.2; }
+    78%  { clip-path:inset(35% 0 40% 0);transform:translate(2px,1px);  opacity:.4; }
+    90%  { clip-path:inset(70% 0 10% 0);transform:translate(-2px,0);   opacity:.25; }
+    100% { clip-path:inset(80% 0 0 0);  transform:translate(0,0);      opacity:.15; }
   }
   .success-title.burst::before{
-    animation:glitchBurstCyan .1s steps(1,end) 7 !important;
+    animation:glitchBurstCyan .12s steps(1,end) 3 !important;
   }
   .success-title.burst::after{
-    animation:glitchBurstRed .1s steps(1,end) 7 !important;
+    animation:glitchBurstRed .12s steps(1,end) 3 !important;
   }
   @keyframes glitchBurstCyan{
-    0%   { clip-path:inset(0 0 70% 0);  transform:translate(-16px,-4px); opacity:1; }
-    25%  { clip-path:inset(60% 0 5% 0); transform:translate(14px,3px);   opacity:.2; }
-    50%  { clip-path:inset(10% 0 55% 0);transform:translate(-12px,4px);  opacity:1; }
-    75%  { clip-path:inset(40% 0 20% 0);transform:translate(10px,-3px);  opacity:.3; }
-    100% { clip-path:inset(0 0 0 0);    transform:translate(-14px,2px);  opacity:1; }
+    0%   { clip-path:inset(0 0 70% 0);  transform:translate(-5px,-1px); opacity:.9; }
+    25%  { clip-path:inset(60% 0 5% 0); transform:translate(4px,1px);   opacity:.4; }
+    50%  { clip-path:inset(10% 0 55% 0);transform:translate(-4px,1px);  opacity:.9; }
+    75%  { clip-path:inset(40% 0 20% 0);transform:translate(3px,-1px);  opacity:.5; }
+    100% { clip-path:inset(0 0 0 0);    transform:translate(-4px,1px);  opacity:.9; }
   }
   @keyframes glitchBurstRed{
-    0%   { clip-path:inset(70% 0 0 0);  transform:translate(15px,4px);   opacity:1; }
-    25%  { clip-path:inset(5% 0 60% 0); transform:translate(-13px,-3px); opacity:.2; }
-    50%  { clip-path:inset(55% 0 10% 0);transform:translate(12px,-4px);  opacity:1; }
-    75%  { clip-path:inset(20% 0 40% 0);transform:translate(-11px,3px);  opacity:.3; }
-    100% { clip-path:inset(0 0 0 0);    transform:translate(14px,-2px);  opacity:1; }
-  }
-  .success-sub{
-    font-family:'Caveat',cursive;
-    font-weight:700;
-    font-size:64px;
-    color:var(--panel);
-    margin:18px 0 0 0;
-    animation:successPop .6s cubic-bezier(.16,1,.3,1) .25s both;
+    0%   { clip-path:inset(70% 0 0 0);  transform:translate(5px,1px);   opacity:.9; }
+    25%  { clip-path:inset(5% 0 60% 0); transform:translate(-4px,-1px); opacity:.4; }
+    50%  { clip-path:inset(55% 0 10% 0);transform:translate(4px,-1px);  opacity:.9; }
+    75%  { clip-path:inset(20% 0 40% 0);transform:translate(-3px,1px);  opacity:.5; }
+    100% { clip-path:inset(0 0 0 0);    transform:translate(4px,-1px);  opacity:.9; }
   }
   @keyframes successPop{
     from{ transform:scale(.7) translateY(20px); opacity:0; }
     to  { transform:scale(1) translateY(0);     opacity:1; }
+  }
+  .success-meaning{
+    font-family:'Space Mono',monospace;
+    font-size:24px;
+    letter-spacing:1px;
+    color:var(--panel);
+    opacity:.85;
+    margin:24px 0 0 0;
+    animation:successPop .6s cubic-bezier(.16,1,.3,1) .3s both;
   }
 
   #burstLayer{
@@ -543,9 +580,9 @@
 
   @keyframes doublePulse{
     0%   { filter:none; }
-    20%  { filter:drop-shadow(0 0 28px var(--gold)) brightness(1.28); }
+    20%  { filter:drop-shadow(0 0 14px var(--gold)) brightness(1.1); }
     40%  { filter:none; }
-    60%  { filter:drop-shadow(0 0 28px var(--gold)) brightness(1.28); }
+    60%  { filter:drop-shadow(0 0 14px var(--gold)) brightness(1.1); }
     100% { filter:none; }
   }
   .content.double-pulse{ animation:doublePulse 1.4s ease-in-out; }
@@ -556,7 +593,7 @@
     .content.double-pulse,
     .progress-label::after,
     .success-title,
-    .success-sub,
+    .success-meaning,
     .success-title::before,
     .success-title::after,
     .success-title.burst::before,
@@ -567,7 +604,7 @@
     .answer-btn.enter,
     .corner.flare::before,
     .corner.flare::after{ animation:none !important; }
-    .success-title, .success-sub{ opacity:1; transform:none; }
+    .success-title, .success-meaning{ opacity:1; transform:none; }
     .success-title::before,
     .success-title::after{ content:none; }
     .question.enter, .answer-btn.enter{ opacity:1; transform:none; }
@@ -623,18 +660,19 @@
             <div class="trivia-label">Did You Know</div>
             <div class="trivia-text" id="triviaText"></div>
           </div>
+          <button type="button" class="continue-btn" id="continueBtn" hidden>Continue &rarr;</button>
         </div>
 
         <div class="success" id="successState" hidden>
           <div class="success-title" id="successTitle" data-text="ACCESS GRANTED">ACCESS GRANTED</div>
-          <div class="success-sub">Jalinan Merdeka activated</div>
+          <div class="success-meaning">The year Malaysia became free.</div>
         </div>
       </div>
     </div>
   </div>
 
   <button type="button" class="mute-btn" id="muteBtn" aria-pressed="false">Mute</button>
-  <audio id="bgmAudio" src="assets/bgm.mp3" loop preload="auto"></audio>
+  <audio id="bgmAudio" src="assets/music.mp3" loop preload="auto"></audio>
 </div>
 
 <script>
@@ -651,86 +689,87 @@
   // ---------- quiz data (PIN = 1957) ----------
   var QUESTIONS = [
     {
-      q: 'Which agreement created the Federation of Malaya, paving the way to independence?',
+      q: 'Perjanjian manakah yang mewujudkan Persekutuan Tanah Melayu, membuka jalan ke arah kemerdekaan?',
       choices: [
-        { text: 'Federation of Malaya Agreement 1957', correct: true },
-        { text: 'Malayan Union Agreement 1946', correct: false }
+        { text: 'Perjanjian Persekutuan Tanah Melayu 1957', correct: true },
+        { text: 'Perjanjian Malayan Union 1946', correct: false }
       ],
       digit: '1',
-      trivia: 'The Malayan Union was scrapped in 1948 after fierce Malay opposition, replaced by the Federation of Malaya Agreement that eventually led to independence.'
+      trivia: 'Malayan Union dimansuhkan pada tahun 1948 selepas bantahan hebat orang Melayu, lalu digantikan dengan Perjanjian Persekutuan Tanah Melayu yang akhirnya membawa kepada kemerdekaan.'
     },
     {
-      q: 'Where did Tunku Abdul Rahman proclaim independence?',
+      q: 'Di manakah Tunku Abdul Rahman mengisytiharkan kemerdekaan?',
       choices: [
         { text: 'Stadium Merdeka, KL', correct: true },
         { text: 'Istana Negara', correct: false }
       ],
       digit: '9',
-      trivia: "The midnight proclamation actually happened quietly at the Selangor Club Padang (today's Dataran Merdeka); the iconic public Merdeka cry came hours later at Stadium Merdeka."
+      trivia: "Pengisytiharan tengah malam itu sebenarnya berlangsung secara senyap di Padang Selangor Club (kini Dataran Merdeka); laungan \"Merdeka!\" yang ikonik di khalayak ramai pula berlaku beberapa jam kemudian di Stadium Merdeka."
     },
     {
-      q: "Who was Malaysia's first Prime Minister?",
+      q: 'Siapakah Perdana Menteri pertama Malaysia?',
       choices: [
         { text: 'Tunku Abdul Rahman', correct: true },
         { text: 'Tun Abdul Razak', correct: false }
       ],
       digit: '5',
-      trivia: 'Tunku Abdul Rahman led the country until 1970, steering it through the 1963 formation of Malaysia.'
+      trivia: 'Tunku Abdul Rahman mengetuai negara sehingga tahun 1970, membawa negara ini melalui pembentukan Malaysia pada tahun 1963.'
     },
     {
-      q: 'How many times did Tunku shout "Merdeka!" at the proclamation?',
+      q: 'Berapa kalikah Tunku melaungkan "Merdeka!" semasa pengisytiharan itu?',
       choices: [
-        { text: 'Seven', correct: true },
-        { text: 'Three', correct: false }
+        { text: 'Tujuh kali', correct: true },
+        { text: 'Tiga kali', correct: false }
       ],
       digit: '7',
-      trivia: 'That sevenfold cry is still reenacted every National Day at Dataran Merdeka.'
+      trivia: 'Laungan tujuh kali itu masih diperagakan semula setiap Hari Kebangsaan di Dataran Merdeka.'
     }
   ];
 
   // one backup per original question, same digit, swapped in permanently after a wrong answer
   var BACKUP_QUESTIONS = [
     {
-      q: 'Which country administered Malaya before independence?',
+      q: 'Negara manakah yang mentadbir Tanah Melayu sebelum kemerdekaan?',
       choices: [
-        { text: 'British Empire', correct: true },
-        { text: 'Dutch East Indies', correct: false }
+        { text: 'Empayar British', correct: true },
+        { text: 'Hindia Timur Belanda', correct: false }
       ],
       digit: '1',
-      trivia: 'British colonial administration over Malaya ended with independence in 1957.'
+      trivia: 'Pentadbiran kolonial British ke atas Tanah Melayu berakhir dengan kemerdekaan pada tahun 1957.'
     },
     {
-      q: 'What is the historic square where Merdeka Day parades are still held today?',
+      q: 'Apakah nama dataran bersejarah tempat perbarisan Hari Merdeka masih diadakan sehingga kini?',
       choices: [
         { text: 'Dataran Merdeka', correct: true },
         { text: 'Padang Besar', correct: false }
       ],
       digit: '9',
-      trivia: "Dataran Merdeka (Merdeka Square) stands where the Selangor Club Padang once hosted the quiet midnight flag-raising."
+      trivia: "Dataran Merdeka terletak di tapak yang dahulunya menjadi Padang Selangor Club, tempat upacara menaikkan bendera secara senyap pada tengah malam itu berlangsung."
     },
     {
-      q: 'Which political alliance did Tunku Abdul Rahman lead to victory in the 1955 general election?',
+      q: 'Gabungan politik manakah yang diketuai oleh Tunku Abdul Rahman ke arah kemenangan dalam pilihan raya umum 1955?',
       choices: [
-        { text: 'Alliance Party', correct: true },
+        { text: 'Parti Perikatan', correct: true },
         { text: 'Barisan Nasional', correct: false }
       ],
       digit: '5',
-      trivia: 'The Alliance (UMNO-MCA-MIC) later evolved into Barisan Nasional in 1973.'
+      trivia: 'Parti Perikatan (UMNO-MCA-MIC) kemudiannya berkembang menjadi Barisan Nasional pada tahun 1973.'
     },
     {
-      q: "On what date is Malaysia's independence celebrated each year?",
+      q: 'Pada tarikh berapakah kemerdekaan Malaysia disambut setiap tahun?',
       choices: [
-        { text: '31 August', correct: true },
+        { text: '31 Ogos', correct: true },
         { text: '16 September', correct: false }
       ],
       digit: '7',
-      trivia: '31 August marks Merdeka Day 1957; 16 September marks Malaysia Day, the 1963 formation of Malaysia.'
+      trivia: '31 Ogos menandakan Hari Merdeka 1957; 16 September pula menandakan Hari Malaysia, iaitu pembentukan Malaysia pada tahun 1963.'
     }
   ];
 
   var activeQuestions = QUESTIONS.slice();
   var backupAvailable = [true, true, true, true];
   var current = 0;
+  var systemUnlocked = false;
 
   var statusLine   = document.getElementById('statusLine');
   var terminalEl   = document.getElementById('terminalEl');
@@ -745,6 +784,24 @@
   var feedbackEl   = document.getElementById('feedbackEl');
   var triviaEl     = document.getElementById('triviaEl');
   var triviaText   = document.getElementById('triviaText');
+  var continueBtn  = document.getElementById('continueBtn');
+  var pendingAdvance = null;
+
+  function showContinue(onAdvance){
+    pendingAdvance = onAdvance;
+    continueBtn.hidden = false;
+    void continueBtn.offsetWidth;
+    continueBtn.classList.add('enter');
+    continueBtn.focus();
+  }
+  continueBtn.addEventListener('click', function(){
+    if (!pendingAdvance) return;
+    var advance = pendingAdvance;
+    pendingAdvance = null;
+    continueBtn.hidden = true;
+    continueBtn.classList.remove('enter');
+    advance();
+  });
 
   function renderQuestion(){
     var item = activeQuestions[current];
@@ -758,14 +815,14 @@
     void questionText.offsetWidth;
     questionText.classList.add('enter');
     answersEl.innerHTML = '';
-    var GESTURE_PAIRS = [
-      ['Stand Up', 'Stay Seated'],
-      ['Raise Left Hand', 'Raise Right Hand'],
-      ['Clap Your Hands', 'Stomp Your Feet'],
-      ['Wave Both Arms', 'Cross Your Arms'],
-      ['Shout "Merdeka!"', 'Stay Silent']
+    // escalates in energy each question, peaking on the final one
+    var GESTURE_TIERS = [
+      ['Hand Over Heart', 'Nod in Salute'],
+      ['Raise Your Fist High', 'Point to the Jalur Gemilang'],
+      ['Wave an Imaginary Flag', 'Stomp Your Feet for Merdeka'],
+      ['Shout "Merdeka!" Three Times', 'Stand and Cheer for Malaysia']
     ];
-    var GESTURES = GESTURE_PAIRS[Math.floor(Math.random() * GESTURE_PAIRS.length)];
+    var GESTURES = GESTURE_TIERS[Math.min(current, GESTURE_TIERS.length - 1)];
     var shuffledChoices = item.choices.slice();
     for (var sc = shuffledChoices.length - 1; sc > 0; sc--){
       var swapIdx = Math.floor(Math.random() * (sc + 1));
@@ -794,6 +851,9 @@
     feedbackEl.className = 'feedback';
     triviaText.textContent = '';
     triviaEl.className = 'trivia';
+    pendingAdvance = null;
+    continueBtn.hidden = true;
+    continueBtn.classList.remove('enter');
   }
 
   function setButtonsDisabled(state){
@@ -827,14 +887,14 @@
       fillSlot(current, activeQuestions[current].digit);
       showTrivia();
       surge();
-      setTimeout(function(){
+      showContinue(function(){
         current++;
         if (current >= QUESTIONS.length){
           unlockSystem();
         } else {
           renderQuestion();
         }
-      }, 2400);
+      });
     } else {
       playWrong();
       btn.classList.add('flash-wrong');
@@ -850,8 +910,10 @@
       feedbackEl.className = 'feedback feedback-wrong';
       setTimeout(function(){
         terminalEl.classList.remove('flash-wrong-anim');
+      }, 900);
+      showContinue(function(){
         renderQuestion();
-      }, 2400);
+      });
     }
   }
 
@@ -866,11 +928,11 @@
     var cx = (termRect.left + termRect.width / 2 - layerRect.left) * scaleX;
     var cy = (termRect.top + termRect.height / 2 - layerRect.top) * scaleY;
     var colors = [COLORS.gold, COLORS.cyan, COLORS.red];
-    for (var i = 0; i < 32; i++){
+    for (var i = 0; i < 16; i++){
       var p = document.createElement('span');
       p.className = 'burst-p';
-      var angle = (i / 32) * Math.PI * 2 + Math.random() * 0.4;
-      var dist = 160 + Math.random() * 320;
+      var angle = (i / 16) * Math.PI * 2 + Math.random() * 0.4;
+      var dist = 90 + Math.random() * 160;
       p.style.left = cx + 'px';
       p.style.top = cy + 'px';
       p.style.background = colors[i % colors.length];
@@ -883,6 +945,7 @@
   }
 
   function unlockSystem(){
+    systemUnlocked = true;
     quizCard.hidden = true;
     successState.hidden = false;
     statusLine.textContent = 'Status: System Unlocked';
@@ -892,6 +955,7 @@
     successTitle.classList.add('burst');
     spawnBurst();
     playUnlock();
+    fadeOutBgm();
     setTimeout(function(){
       contentEl.classList.remove('double-pulse');
       corners.forEach(function(c){ c.classList.remove('flare'); });
@@ -924,8 +988,17 @@
   updateMuteBtn();
 
   function playBgm(){
+    if (systemUnlocked) return;
     if (bgmAudio.paused) bgmAudio.play().catch(function(){});
   }
+  // only autoplay if we arrived here via the "Begin Verification" click on the intro page;
+  // fall back to first interaction on this page otherwise (or if the browser still blocks it)
+  var cameFromBegin = false;
+  try {
+    cameFromBegin = sessionStorage.getItem('jm-bgm-start') === '1';
+    sessionStorage.removeItem('jm-bgm-start');
+  } catch (e){}
+  if (cameFromBegin) playBgm();
   window.addEventListener('pointerdown', playBgm, { once:true });
   window.addEventListener('keydown', playBgm, { once:true });
 
@@ -936,6 +1009,24 @@
     updateMuteBtn();
     if (!bgmMuted) playBgm();
   });
+
+  function fadeOutBgm(duration){
+    duration = duration || 2500;
+    var startVol = bgmAudio.volume;
+    if (bgmAudio.paused || startVol <= 0){ bgmAudio.pause(); return; }
+    var startTime = performance.now();
+    function step(now){
+      var t = Math.max(0, Math.min(1, (now - startTime) / duration));
+      bgmAudio.volume = startVol * (1 - t);
+      if (t < 1){
+        requestAnimationFrame(step);
+      } else {
+        bgmAudio.pause();
+        bgmAudio.volume = startVol;
+      }
+    }
+    requestAnimationFrame(step);
+  }
 
   function beep(freq, dur, type, startDelay, gainPeak){
     startDelay = startDelay || 0;
@@ -1146,7 +1237,7 @@
   }
   function scheduleGlitch(){
     if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    var delay = 4000 + Math.random() * 6000;
+    var delay = 15000 + Math.random() * 15000;
     setTimeout(function(){
       triggerGlitch();
       scheduleGlitch();
