@@ -181,6 +181,11 @@
     color:var(--red);
     text-transform:uppercase;
     margin:0 0 20px 0;
+    transition:color .3s ease, text-shadow .3s ease;
+  }
+  .status-line.unlocked{
+    color:var(--term-green);
+    text-shadow:0 0 16px rgba(57,255,106,.5);
   }
 
   .terminal{
@@ -545,12 +550,12 @@
     to  { transform:scale(1) translateY(0);     opacity:1; }
   }
   .success-meaning{
-    font-family:'Space Mono',monospace;
-    font-size:24px;
+    font-family:'Archivo Black',sans-serif;
+    font-size:34px;
     letter-spacing:1px;
-    color:var(--panel);
-    opacity:.85;
-    margin:24px 0 0 0;
+    color:var(--gold);
+    text-shadow:0 0 16px rgba(255,215,0,.4);
+    margin:40px 0 0 0;
     animation:successPop .6s cubic-bezier(.16,1,.3,1) .3s both;
   }
 
@@ -950,6 +955,7 @@
     quizCard.hidden = true;
     successState.hidden = false;
     statusLine.textContent = 'Status: System Unlocked';
+    statusLine.classList.add('unlocked');
     contentEl.classList.add('double-pulse');
     var corners = document.querySelectorAll('.corner');
     corners.forEach(function(c){ c.classList.add('flare'); });
