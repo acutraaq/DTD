@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DTD Townhall 2026 - Jalinan Merdeka - Verification</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Archivo+Black&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gold:#ffd700;
+    --azure:#0080ff;
+    --red:#d7282f;
+    --cyan:#22c0de;
+    --panel:#d7f7ff;
+    --paper:#040b18;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    background:var(--paper);
+    overflow:hidden;
+    font-family:'Space Mono',monospace;
+  }
+
+  #stage{
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:1920px;
+    height:1080px;
+    background:var(--paper);
+    transform:translate(-50%,-50%) scale(min(calc(100vw / 1920px), calc(100vh / 1080px)));
+    transform-origin:center center;
+    overflow:hidden;
+  }
+
+  #glitchLayer{
+    position:absolute;
+    inset:0;
+    width:1920px;
+    height:1080px;
+  }
+  #glitchLayer.glitch-active{
+    animation:glitchBurst .18s steps(1) both;
+  }
+  @keyframes glitchBurst{
+    0%   { filter:none; transform:translate(0,0); }
+    10%  { filter:url(#glitchFilter) contrast(1.06); transform:translate(-2px,0); }
+    20%  { filter:none; transform:translate(1px,-1px); }
+    35%  { filter:url(#glitchFilter) contrast(1.1); transform:translate(-1px,0); }
+    50%  { filter:none; transform:translate(0,1px); }
+    65%  { filter:url(#glitchFilter); transform:translate(2px,0); }
+    80%  { filter:none; transform:translate(-1px,0); }
+    100% { filter:none; transform:translate(0,0); }
+  }
+
+  #bgImage{
+    position:absolute;
+    inset:0;
+    width:1920px;
+    height:1080px;
+    object-fit:cover;
+  }
+
+  #circuitSvg{
+    position:absolute;
+    inset:0;
+    width:1920px;
+    height:1080px;
+  }
+
+  .frame{
+    position:absolute;
+    inset:0;
+    width:1920px;
+    height:1080px;
+    background:rgba(6,20,34,.62);
+    border:1px solid rgba(34,192,222,.4);
+    border-radius:6px;
+    box-shadow:0 0 50px rgba(34,192,222,.18), inset 0 0 70px rgba(34,192,222,.08);
+  }
+
+  .corner{
+    position:absolute;
+    width:64px;
+    height:64px;
+    pointer-events:none;
+  }
+  .corner::before,
+  .corner::after{
+    content:'';
+    position:absolute;
+    background:var(--cyan);
+    box-shadow:0 0 10px rgba(34,192,222,.7);
+  }
+  .corner::before{ width:100%; height:4px; }
+  .corner::after{ width:4px; height:100%; }
+  .corner.tl{ top:-2px; left:-2px; }
+  .corner.tl::before,
+  .corner.tl::after{ top:0; left:0; }
+  .corner.tr{ top:-2px; right:-2px; }
+  .corner.tr::before,
+  .corner.tr::after{ top:0; right:0; }
+  .corner.bl{ bottom:-2px; left:-2px; }
+  .corner.bl::before,
+  .corner.bl::after{ bottom:0; left:0; }
+  .corner.br{ bottom:-2px; right:-2px; }
+  .corner.br::before,
+  .corner.br::after{ bottom:0; right:0; }
+
+  @keyframes cornerFlare{
+    0%,100%{ background:var(--cyan); box-shadow:0 0 10px rgba(34,192,222,.7); }
+    50%{ background:var(--gold); box-shadow:0 0 22px rgba(255,215,0,.9); }
+  }
+  .corner.flare::before,
+  .corner.flare::after{
+    animation:cornerFlare 1.4s ease-in-out;
+  }
+
+  [hidden]{ display:none !important; }
+
+  .mute-btn{
+    position:absolute;
+    top:24px;
+    right:24px;
+    z-index:10;
+    font-family:'Space Mono',monospace;
+    font-size:13px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:rgba(215,240,255,.5);
+    background:transparent;
+    border:1px solid rgba(215,240,255,.2);
+    border-radius:20px;
+    padding:6px 14px;
+    cursor:pointer;
+    opacity:.55;
+    transition:opacity .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .mute-btn:hover,
+  .mute-btn:focus-visible{
+    opacity:1;
+    color:var(--cyan);
+    background:rgba(34,192,222,.15);
+    border-color:rgba(34,192,222,.6);
+  }
+  .mute-btn[aria-pressed="true"]{
+    color:rgba(215,40,47,.6);
+    border-color:rgba(215,40,47,.3);
+  }
+  .mute-btn[aria-pressed="true"]:hover,
+  .mute-btn[aria-pressed="true"]:focus-visible{
+    color:var(--red);
+    border-color:rgba(215,40,47,.6);
+  }
+
+  .sr-only{
+    position:absolute;
+    width:1px;
+    height:1px;
+    padding:0;
+    margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0;
+  }
+
+  .content{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:100px 80px;
+    text-align:center;
+  }
+
+  .status-line{
+    font-family:'Archivo Black',sans-serif;
+    font-size:38px;
+    letter-spacing:5px;
+    color:var(--red);
+    text-transform:uppercase;
+    margin:0 0 60px 0;
+  }
+
+  .scan-wrap{
+    position:relative;
+    width:340px;
+    height:340px;
+  }
+  .scan-ring{
+    width:100%;
+    height:100%;
+    transform:rotate(-90deg);
+  }
+  .scan-ring-track{
+    fill:none;
+    stroke:rgba(34,192,222,.2);
+    stroke-width:14;
+  }
+  .scan-ring-fill{
+    fill:none;
+    stroke:var(--cyan);
+    stroke-width:14;
+    stroke-linecap:round;
+    stroke-dasharray:816.8;
+    stroke-dashoffset:816.8;
+    filter:drop-shadow(0 0 10px rgba(34,192,222,.7));
+    transition:stroke .15s ease;
+  }
+  .scan-btn{
+    position:absolute;
+    inset:24px;
+    border-radius:50%;
+    border:2px solid rgba(34,192,222,.5);
+    background:rgba(0,20,50,.55);
+    color:var(--panel);
+    font-family:'Archivo Black',sans-serif;
+    cursor:pointer;
+    touch-action:none;
+    user-select:none;
+    -webkit-user-select:none;
+  }
+  .scan-btn:focus-visible{
+    outline:3px solid var(--cyan);
+    outline-offset:6px;
+  }
+  .scan-readout{
+    font-family:'Space Mono',monospace;
+    font-size:44px;
+    letter-spacing:2px;
+    color:var(--cyan);
+  }
+  .scan-sub{
+    font-family:'Space Mono',monospace;
+    font-size:16px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--panel);
+    opacity:.6;
+    margin-top:6px;
+  }
+
+  .scan-label{
+    font-family:'Archivo Black',sans-serif;
+    font-size:30px;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--panel);
+    margin:48px 0 0 0;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .corner.flare::before,
+    .corner.flare::after{
+      animation:none !important;
+    }
+    #glitchLayer.glitch-active{
+      animation:none !important;
+      filter:none !important;
+      transform:none !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div id="stage">
+  <div id="glitchLayer">
+    <img id="bgImage" src="assets/glitch-bg.png" alt="">
+    <svg id="circuitSvg" viewBox="0 0 1920 1080"></svg>
+
+    <div class="frame">
+      <span class="corner tl"></span>
+      <span class="corner tr"></span>
+      <span class="corner bl"></span>
+      <span class="corner br"></span>
+
+      <div class="content" id="contentEl">
+        <div class="status-line" id="statusLine">Status: Awaiting Operator Verification</div>
+
+        <div class="scan-wrap">
+          <svg class="scan-ring" viewBox="0 0 300 300">
+            <circle class="scan-ring-track" cx="150" cy="150" r="130"></circle>
+            <circle class="scan-ring-fill" id="scanRingFill" cx="150" cy="150" r="130"></circle>
+          </svg>
+          <button type="button" class="scan-btn" id="scanBtn" aria-label="Hold to verify operator identity">
+            <div class="scan-readout" id="scanReadout">0%</div>
+            <div class="scan-sub" id="scanSub">Hold</div>
+          </button>
+        </div>
+
+        <div class="scan-label">Hold to Verify Operator Identity</div>
+        <div class="sr-only" id="srAnnounce" aria-live="polite" aria-atomic="true"></div>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" class="mute-btn" id="muteBtn" aria-pressed="false">Mute</button>
+</div>
+
+<script>
+(function(){
+  var stage = document.getElementById('stage');
+  function fitStage(){
+    var scale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+    stage.style.transform = 'translate(-50%, -50%) scale(' + scale + ')';
+  }
+  window.addEventListener('resize', fitStage);
+  fitStage();
+
+  var COLORS = { cyan: '#0cc0df', gold: '#ffd700', red: '#d7282f' };
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function buildCircuit(reduceMotion){
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var xlinkNS = 'http://www.w3.org/1999/xlink';
+    var svg = document.getElementById('circuitSvg');
+
+    var defs = document.createElementNS(svgNS, 'defs');
+    defs.innerHTML =
+      '<filter id="packetGlow" x="-200%" y="-200%" width="500%" height="500%">' +
+      '<feGaussianBlur stdDeviation="2.6" result="b"/>' +
+      '<feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>' +
+      '</filter>' +
+      '<filter id="glitchFilter" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">' +
+      '<feColorMatrix in="SourceGraphic" type="matrix" values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" result="rCh"/>' +
+      '<feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" result="gCh"/>' +
+      '<feColorMatrix in="SourceGraphic" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" result="bCh"/>' +
+      '<feOffset in="rCh" dx="-6" dy="0" result="rOff"/>' +
+      '<feOffset in="bCh" dx="6" dy="1" result="bOff"/>' +
+      '<feTurbulence type="fractalNoise" baseFrequency="0 0.09" numOctaves="1" seed="4" result="noise"/>' +
+      '<feDisplacementMap in="gCh" in2="noise" scale="22" xChannelSelector="R" yChannelSelector="G" result="gWarp"/>' +
+      '<feBlend in="rOff" in2="bOff" mode="screen" result="rb"/>' +
+      '<feBlend in="rb" in2="gWarp" mode="screen"/>' +
+      '</filter>';
+    svg.appendChild(defs);
+
+    var traceCount = 40;
+    var viaMax = reduceMotion ? 0 : 80;
+    var packetCount = reduceMotion ? 0 : 14;
+    var cols = 16, rows = 9;
+    var cellW = 1920 / cols, cellH = 1080 / rows;
+    var viaBudget = viaMax;
+    var traces = [];
+
+    for (var t = 0; t < traceCount; t++){
+      var gx = Math.floor(Math.random() * cols);
+      var gy = Math.floor(Math.random() * rows);
+      var x = gx * cellW + (Math.random() - 0.5) * cellW * 0.6 + cellW / 2;
+      var y = gy * cellH + (Math.random() - 0.5) * cellH * 0.6 + cellH / 2;
+      var steps = 3 + Math.floor(Math.random() * 4);
+      var dir = Math.random() < 0.5 ? 'h' : 'v';
+      var pts = [[x, y]];
+
+      for (var s = 0; s < steps; s++){
+        var stepLen = (cellW + cellH) / 2 * (0.6 + Math.random() * 0.9);
+        if (dir === 'h'){ x += (Math.random() < 0.5 ? -1 : 1) * stepLen; }
+        else { y += (Math.random() < 0.5 ? -1 : 1) * stepLen; }
+        x = Math.max(20, Math.min(1900, x));
+        y = Math.max(20, Math.min(1060, y));
+        pts.push([x, y]);
+        dir = dir === 'h' ? 'v' : 'h';
+      }
+
+      var id = 'trace' + t;
+      var d = 'M' + pts.map(function(p){ return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' L');
+
+      var path = document.createElementNS(svgNS, 'path');
+      path.setAttribute('id', id);
+      path.setAttribute('d', d);
+      path.setAttribute('fill', 'none');
+      path.setAttribute('stroke', COLORS.cyan);
+      path.setAttribute('stroke-width', (1 + Math.random() * 0.8).toFixed(2));
+      path.setAttribute('stroke-linecap', 'round');
+      path.setAttribute('stroke-linejoin', 'round');
+      path.setAttribute('opacity', (0.24 + Math.random() * 0.26).toFixed(2));
+      svg.appendChild(path);
+      traces.push({ id: id, pts: pts });
+
+      for (var bi = 1; bi < pts.length - 1 && viaBudget > 0; bi++){
+        if (Math.random() < 0.7){
+          viaBudget--;
+          var vx = pts[bi][0], vy = pts[bi][1];
+          var r = 2.4 + Math.random() * 1.6;
+          var c = document.createElementNS(svgNS, 'circle');
+          c.setAttribute('cx', vx.toFixed(1));
+          c.setAttribute('cy', vy.toFixed(1));
+          c.setAttribute('r', r.toFixed(1));
+          c.setAttribute('fill', COLORS.cyan);
+          c.setAttribute('opacity', '0.35');
+          svg.appendChild(c);
+
+          var begin = (Math.random() * 3).toFixed(2) + 's';
+
+          var animOp = document.createElementNS(svgNS, 'animate');
+          animOp.setAttribute('attributeName', 'opacity');
+          animOp.setAttribute('values', '0.18;0.75;0.18');
+          animOp.setAttribute('dur', '3s');
+          animOp.setAttribute('begin', begin);
+          animOp.setAttribute('repeatCount', 'indefinite');
+          c.appendChild(animOp);
+
+          var animR = document.createElementNS(svgNS, 'animate');
+          animR.setAttribute('attributeName', 'r');
+          animR.setAttribute('values', r.toFixed(1) + ';' + (r * 1.5).toFixed(1) + ';' + r.toFixed(1));
+          animR.setAttribute('dur', '3s');
+          animR.setAttribute('begin', begin);
+          animR.setAttribute('repeatCount', 'indefinite');
+          c.appendChild(animR);
+        }
+      }
+    }
+
+    var shuffled = traces.slice().sort(function(){ return Math.random() - 0.5; });
+    var chosen = shuffled.slice(0, packetCount);
+    chosen.forEach(function(tr){
+      var g = document.createElementNS(svgNS, 'g');
+
+      var cyanStreak = document.createElementNS(svgNS, 'rect');
+      cyanStreak.setAttribute('x', '-14');
+      cyanStreak.setAttribute('y', '-1.3');
+      cyanStreak.setAttribute('width', '11');
+      cyanStreak.setAttribute('height', '2.6');
+      cyanStreak.setAttribute('rx', '1.3');
+      cyanStreak.setAttribute('fill', COLORS.cyan);
+      cyanStreak.setAttribute('opacity', '0.85');
+      cyanStreak.setAttribute('filter', 'url(#packetGlow)');
+
+      var redStreak = document.createElementNS(svgNS, 'rect');
+      redStreak.setAttribute('x', '3');
+      redStreak.setAttribute('y', '-1.3');
+      redStreak.setAttribute('width', '11');
+      redStreak.setAttribute('height', '2.6');
+      redStreak.setAttribute('rx', '1.3');
+      redStreak.setAttribute('fill', COLORS.red);
+      redStreak.setAttribute('opacity', '0.7');
+      redStreak.setAttribute('filter', 'url(#packetGlow)');
+
+      g.appendChild(cyanStreak);
+      g.appendChild(redStreak);
+
+      var n = 8 + Math.floor(Math.random() * 5);
+      var pts = [];
+      for (var k = 0; k < n; k++){ pts.push(Math.random()); }
+      pts.sort(function(a, b){ return a - b; });
+      if (Math.random() < 0.5){ pts.reverse(); }
+      var keyPoints = pts.map(function(p){ return p.toFixed(3); }).join(';');
+      var keyTimes = pts.map(function(_, i){ return (i / (n - 1)).toFixed(3); }).join(';');
+
+      var mm = document.createElementNS(svgNS, 'animateMotion');
+      var dur = (2.5 + Math.random() * 3.5).toFixed(2) + 's';
+      mm.setAttribute('dur', dur);
+      mm.setAttribute('repeatCount', 'indefinite');
+      mm.setAttribute('rotate', 'auto');
+      mm.setAttribute('calcMode', 'discrete');
+      mm.setAttribute('keyPoints', keyPoints);
+      mm.setAttribute('keyTimes', keyTimes);
+      var mpath = document.createElementNS(svgNS, 'mpath');
+      mpath.setAttributeNS(xlinkNS, 'href', '#' + tr.id);
+      mm.appendChild(mpath);
+      g.appendChild(mm);
+
+      var flick = document.createElementNS(svgNS, 'animate');
+      flick.setAttribute('attributeName', 'opacity');
+      flick.setAttribute('values', '1;0.15;1;1;0.4;1');
+      flick.setAttribute('dur', (0.6 + Math.random() * 0.8).toFixed(2) + 's');
+      flick.setAttribute('calcMode', 'discrete');
+      flick.setAttribute('repeatCount', 'indefinite');
+      g.appendChild(flick);
+
+      svg.appendChild(g);
+    });
+  }
+
+  // ---------- mute preference (shared across pages; nothing plays audio on this page) ----------
+  var BGM_MUTE_KEY = 'jm-bgm-muted';
+  var muteBtn = document.getElementById('muteBtn');
+  var bgmMuted = localStorage.getItem(BGM_MUTE_KEY) === '1';
+  function updateMuteBtn(){
+    muteBtn.textContent = bgmMuted ? 'Unmute' : 'Mute';
+    muteBtn.setAttribute('aria-pressed', bgmMuted ? 'true' : 'false');
+  }
+  updateMuteBtn();
+  muteBtn.addEventListener('click', function(){
+    bgmMuted = !bgmMuted;
+    localStorage.setItem(BGM_MUTE_KEY, bgmMuted ? '1' : '0');
+    updateMuteBtn();
+  });
+
+  // ---------- WebAudio scanning tone ----------
+  var audioCtx = null;
+  function ensureAudio(){
+    if (!audioCtx){
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new Ctx();
+    }
+    return audioCtx;
+  }
+  var toneOsc = null, toneGain = null;
+  function startTone(){
+    if (bgmMuted || toneOsc) return;
+    var ctx = ensureAudio();
+    toneOsc = ctx.createOscillator();
+    toneGain = ctx.createGain();
+    toneOsc.type = 'sine';
+    toneOsc.frequency.value = 260;
+    toneOsc.connect(toneGain);
+    toneGain.connect(ctx.destination);
+    toneGain.gain.setValueAtTime(0.0001, ctx.currentTime);
+    toneGain.gain.linearRampToValueAtTime(0.12, ctx.currentTime + 0.05);
+    toneOsc.start();
+  }
+  function updateTone(p){
+    if (!toneOsc) return;
+    toneOsc.frequency.setTargetAtTime(260 + p * 480, ensureAudio().currentTime, 0.05);
+  }
+  function stopTone(){
+    if (!toneOsc) return;
+    var ctx = ensureAudio();
+    var osc = toneOsc, gain = toneGain;
+    toneOsc = null; toneGain = null;
+    gain.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.05);
+    setTimeout(function(){ osc.stop(); }, 150);
+  }
+
+  // ---------- hold-to-scan ----------
+  var scanBtn = document.getElementById('scanBtn');
+  var ringFill = document.getElementById('scanRingFill');
+  var readout = document.getElementById('scanReadout');
+  var scanSub = document.getElementById('scanSub');
+  var srAnnounce = document.getElementById('srAnnounce');
+  var CIRCUMFERENCE = 2 * Math.PI * 130;
+  var FILL_MS = 2500;
+  var DRAIN_MS = 1700;
+
+  var progress = 0;
+  var charging = false;
+  var lastTs = null;
+  var rafId = null;
+  var completed = false;
+  var announcedHalf = false;
+
+  function updateRing(p){
+    ringFill.style.strokeDashoffset = (CIRCUMFERENCE * (1 - p)).toFixed(1);
+    ringFill.style.stroke = p >= 1 ? COLORS.gold : COLORS.cyan;
+    var pct = Math.round(p * 100);
+    readout.textContent = pct + '%';
+    scanSub.textContent = charging ? 'Scanning' : (p > 0 ? 'Hold' : 'Hold');
+    if (pct >= 50 && !announcedHalf){
+      announcedHalf = true;
+      srAnnounce.textContent = 'Verification halfway complete.';
+    }
+    if (pct < 50){ announcedHalf = false; }
+  }
+
+  function completeScan(){
+    completed = true;
+    charging = false;
+    stopTone();
+    srAnnounce.textContent = 'Operator verified.';
+    location.href = 'dtd-jalinan-merdeka-intro.html';
+  }
+
+  function frame(ts){
+    if (completed) return;
+    if (lastTs == null) lastTs = ts;
+    var dt = ts - lastTs;
+    lastTs = ts;
+
+    if (charging){
+      progress = Math.min(1, progress + dt / FILL_MS);
+      updateTone(progress);
+    } else {
+      progress = Math.max(0, progress - dt / DRAIN_MS);
+    }
+    updateRing(progress);
+
+    if (progress >= 1){
+      completeScan();
+      return;
+    }
+    if (charging || progress > 0){
+      rafId = requestAnimationFrame(frame);
+    } else {
+      rafId = null;
+      lastTs = null;
+    }
+  }
+
+  function startCharging(){
+    if (charging || completed) return;
+    charging = true;
+    startTone();
+    if (!rafId){
+      lastTs = null;
+      rafId = requestAnimationFrame(frame);
+    }
+  }
+  function stopCharging(){
+    if (!charging) return;
+    charging = false;
+    stopTone();
+  }
+
+  scanBtn.addEventListener('pointerdown', function(e){ e.preventDefault(); startCharging(); });
+  window.addEventListener('pointerup', stopCharging);
+  window.addEventListener('pointercancel', stopCharging);
+  scanBtn.addEventListener('keydown', function(e){
+    if (e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter'){
+      e.preventDefault();
+      startCharging();
+    }
+  });
+  scanBtn.addEventListener('keyup', function(e){
+    if (e.key === ' ' || e.key === 'Spacebar' || e.key === 'Enter') stopCharging();
+  });
+  scanBtn.addEventListener('blur', stopCharging);
+
+  var glitchLayer = document.getElementById('glitchLayer');
+  function scheduleGlitch(){
+    if (reduceMotion) return;
+    var delay = 15000 + Math.random() * 15000;
+    setTimeout(function(){
+      glitchLayer.classList.add('glitch-active');
+      setTimeout(function(){
+        glitchLayer.classList.remove('glitch-active');
+      }, 260);
+      scheduleGlitch();
+    }, delay);
+  }
+
+  buildCircuit(reduceMotion);
+  scheduleGlitch();
+})();
+</script>
+
+</body>
+</html>
