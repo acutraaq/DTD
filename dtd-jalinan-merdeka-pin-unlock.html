@@ -285,40 +285,6 @@
     box-shadow:0 0 6px rgba(255,215,0,.6);
   }
 
-  .timer-bar{
-    width:100%;
-    height:10px;
-    background:rgba(34,192,222,.15);
-    border-radius:5px;
-    overflow:hidden;
-    margin-bottom:18px;
-  }
-  .timer-fill{
-    height:100%;
-    width:100%;
-    background:var(--cyan);
-    box-shadow:0 0 10px rgba(34,192,222,.6);
-  }
-  .timer-fill.urgent{
-    background:var(--red);
-    box-shadow:0 0 10px rgba(215,40,47,.7);
-  }
-  .timer-lockin{
-    font-family:'Archivo Black',sans-serif;
-    font-size:24px;
-    letter-spacing:2px;
-    text-transform:uppercase;
-    text-align:center;
-    color:var(--red);
-    text-shadow:0 0 14px rgba(215,40,47,.7);
-    margin:-6px 0 18px 0;
-    animation:lockinPulse .6s ease-in-out infinite;
-  }
-  @keyframes lockinPulse{
-    0%,100%{ transform:scale(1); opacity:1; }
-    50%{ transform:scale(1.06); opacity:.75; }
-  }
-
   .question{
     font-family:'Archivo Black',sans-serif;
     font-size:38px;
@@ -576,8 +542,6 @@
     .answer-btn.enter,
     .corner.flare::before,
     .corner.flare::after{ animation:none !important; }
-    .timer-lockin{ animation:none !important; }
-    .timer-fill{ transition:none !important; }
     .success-title, .success-sub{ opacity:1; transform:none; }
     .success-title::before,
     .success-title::after{ content:none; }
@@ -627,8 +591,6 @@
               <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
             </div>
           </div>
-          <div class="timer-bar"><div class="timer-fill" id="timerFill"></div></div>
-          <div class="timer-lockin" id="timerLockin" hidden>Lock It In!</div>
           <div class="question" id="questionText"></div>
           <div class="answers" id="answersEl"></div>
           <div class="feedback" id="feedbackEl" aria-live="polite"></div>
@@ -755,42 +717,6 @@
   var feedbackEl   = document.getElementById('feedbackEl');
   var triviaEl     = document.getElementById('triviaEl');
   var triviaText   = document.getElementById('triviaText');
-  var timerFill    = document.getElementById('timerFill');
-  var timerLockin  = document.getElementById('timerLockin');
-
-  var TIMER_SECONDS = 8;
-  var timerUrgentTimeout = null;
-  var timerLockinTimeout = null;
-
-  function stopTimer(){
-    clearTimeout(timerUrgentTimeout);
-    clearTimeout(timerLockinTimeout);
-  }
-
-  function startTimer(){
-    stopTimer();
-    timerLockin.hidden = true;
-    timerFill.classList.remove('urgent');
-    timerFill.style.transition = 'none';
-    timerFill.style.width = '100%';
-    void timerFill.offsetWidth;
-    timerFill.style.transition = 'width ' + TIMER_SECONDS + 's linear';
-    timerFill.style.width = '0%';
-    timerUrgentTimeout = setTimeout(function(){
-      timerFill.classList.add('urgent');
-    }, (TIMER_SECONDS - 3) * 1000);
-    timerLockinTimeout = setTimeout(function(){
-      timerLockin.hidden = false;
-      playTimeUp();
-    }, TIMER_SECONDS * 1000);
-  }
-
-  function freezeTimer(){
-    stopTimer();
-    var currentWidth = getComputedStyle(timerFill).width;
-    timerFill.style.transition = 'none';
-    timerFill.style.width = currentWidth;
-  }
 
   function renderQuestion(){
     var item = activeQuestions[current];
@@ -840,7 +766,6 @@
     feedbackEl.className = 'feedback';
     triviaText.textContent = '';
     triviaEl.className = 'trivia';
-    startTimer();
   }
 
   function setButtonsDisabled(state){
@@ -865,7 +790,6 @@
   }
 
   function handleAnswer(choice, btn){
-    freezeTimer();
     setButtonsDisabled(true);
     if (choice.correct){
       playCorrect();
@@ -977,7 +901,6 @@
 
   function playCorrect(){ beep(760, 0.1, 'square'); }
   function playWrong(){ beep(150, 0.4, 'sawtooth', 0, 0.25); }
-  function playTimeUp(){ beep(220, 0.15, 'square', 0, 0.2); beep(220, 0.15, 'square', 0.18, 0.2); }
   function playUnlock(){
     var notes = [523.25, 659.25, 783.99, 1046.50];
     notes.forEach(function(f, i){ beep(f, 0.28, 'sine', i * 0.16, 0.22); });
