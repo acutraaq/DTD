@@ -190,6 +190,12 @@
     text-transform:uppercase;
     margin:0 0 34px 0;
   }
+  .status-line::after{
+    content:'▌';
+    margin-left:8px;
+    color:var(--red);
+    animation:cursorBlink 1s steps(1) infinite;
+  }
 
   .boot-log{
     position:relative;
@@ -245,6 +251,7 @@
     line-height:1.55;
     color:var(--panel);
     margin:0;
+    white-space:pre-line;
   }
 
   .type-cursor{
@@ -301,6 +308,9 @@
     .type-cursor{
       display:none !important;
     }
+    .status-line::after{
+      animation:none !important;
+    }
     .corner.flare::before,
     .corner.flare::after{
       animation:none !important;
@@ -327,7 +337,7 @@
       <span class="corner br"></span>
 
       <div class="content" id="contentEl">
-        <div class="status-line" id="statusLine">Status: Initializing Jalinan Merdeka...</div>
+        <div class="status-line" id="statusLine">Status: Initializing Jalinan Merdeka</div>
 
         <div class="boot-log" id="bootLog"></div>
         <div class="sr-only" id="srAnnounce" aria-live="polite" aria-atomic="true"></div>
@@ -517,16 +527,8 @@
 
   var PILLARS = [
     {
-      title: 'JALINAN — Threads of Connection',
-      body: 'Cloud, AI, automation woven into one digital ecosystem — connecting every department, seamlessly.'
-    },
-    {
-      title: 'MERDEKA — Digital Liberation',
-      body: 'Freedom from manual work, legacy bottlenecks, red tape. AI and automation liberate our people for higher-value work.'
-    },
-    {
-      title: 'KESEJAHTERAAN DINIKMATI — Well-being Enjoyed',
-      body: 'Woven systems + liberated work = smooth operations, faster service, lasting peace of mind for all.'
+      title: 'JALINAN MERDEKA',
+      body: 'Semuanya bermula dengan satu hubungan.\nSatu data.\nSatu sistem.\nSatu jabatan.\nKemudian semuanya bersambung.\nData mengalir. Kerja bergerak.\nKita mula melangkah bersama.\nItulah jalinan.\nBukan sekadar menghubungkan sistem,\ntetapi menghubungkan kita.\n\nDan apabila kerja yang berulang\ntidak lagi mengambil masa kita...\napabila sistem lama\ntidak lagi menjadi batas...\nkita mula mempunyai sesuatu yang lebih berharga.\nMasa.\nMasa untuk berfikir.\nMasa untuk mencipta.\nMasa untuk melakukan perkara yang benar-benar penting.\nItulah makna merdeka dalam dunia digital.\nBukan bekerja lebih banyak.\nTetapi memberi ruang untuk kita bekerja dengan lebih bermakna.'
     }
   ];
 
