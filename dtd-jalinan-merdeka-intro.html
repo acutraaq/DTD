@@ -732,6 +732,7 @@
     skipIntro();
   });
   window.addEventListener('keydown', function(e){
+    if (e.key === 'Tab' || e.key === 'Shift' || e.key === 'Control' || e.key === 'Alt' || e.key === 'Meta') return;
     if (e.key === 'Enter' && (document.activeElement === ctaBtn || document.activeElement === muteBtn)) return;
     skipIntro();
   });
