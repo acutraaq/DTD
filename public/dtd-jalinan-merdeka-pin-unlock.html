@@ -847,7 +847,8 @@
 
       var tag = document.createElement('span');
       tag.className = 'gesture-tag';
-      tag.textContent = GESTURES[idx];
+      // gesture pins to correctness, not shuffle position; tier 1 has correct at index 0
+      tag.textContent = current === 0 ? GESTURES[choice.correct ? 1 : 0] : GESTURES[choice.correct ? 0 : 1];
       tag.setAttribute('aria-hidden', 'true');
       btn.appendChild(tag);
 
