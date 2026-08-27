@@ -6,7 +6,7 @@
 <title>DTD Townhall 2026 - Jalinan Merdeka</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Archivo+Black&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Archivo+Black&family=Open+Sans:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --navy:#001a70;
@@ -194,20 +194,20 @@
     justify-content:center;
     gap:60px;
     background:var(--terminal-navy);
-    border:3px solid var(--gold);
+    border:3px solid var(--term-green);
     border-radius:6px;
     padding:34px 70px;
     margin-bottom:24px;
     width:fit-content;
     max-width:100%;
-    box-shadow:0 0 30px rgba(255,215,0,.35), 0 0 150px rgba(255,215,0,.16);
+    box-shadow:0 0 30px rgba(57,255,106,.35), 0 0 150px rgba(57,255,106,.16);
   }
 
   .bracket{
     font-family:'Space Mono',monospace;
     font-size:110px;
     line-height:1;
-    color:var(--gold);
+    color:var(--term-green);
     opacity:.55;
   }
 
@@ -329,7 +329,8 @@
   }
 
   .question{
-    font-family:'Archivo Black',sans-serif;
+    font-family:'Open Sans',sans-serif;
+    font-weight:700;
     font-size:38px;
     line-height:1.3;
     color:var(--panel);
@@ -352,9 +353,9 @@
     flex-direction:column;
     align-items:flex-start;
     gap:8px;
-    font-family:'Archivo Black',sans-serif;
+    font-family:'Open Sans',sans-serif;
+    font-weight:700;
     font-size:28px;
-    text-transform:uppercase;
     text-align:left;
     color:#fff;
     background:var(--terminal-navy);
@@ -552,21 +553,14 @@
     from{ transform:scale(.7) translateY(20px); opacity:0; }
     to  { transform:scale(1) translateY(0);     opacity:1; }
   }
-  .success-flag{
-    width:160px;
-    height:80px;
-    margin:32px 0 0 0;
-    filter:drop-shadow(0 0 14px rgba(255,215,0,.35));
-    animation:successPop .6s cubic-bezier(.16,1,.3,1) .3s both;
-  }
   .success-meaning{
     font-family:'Archivo Black',sans-serif;
     font-size:34px;
     letter-spacing:1px;
     color:var(--gold);
     text-shadow:0 0 16px rgba(255,215,0,.4);
-    margin:24px 0 0 0;
-    animation:successPop .6s cubic-bezier(.16,1,.3,1) .45s both;
+    margin:40px 0 0 0;
+    animation:successPop .6s cubic-bezier(.16,1,.3,1) .3s both;
   }
 
   #burstLayer{
@@ -609,7 +603,6 @@
     .content.double-pulse,
     .progress-label::after,
     .success-title,
-    .success-flag,
     .success-meaning,
     .success-title::before,
     .success-title::after,
@@ -621,7 +614,7 @@
     .answer-btn.enter,
     .corner.flare::before,
     .corner.flare::after{ animation:none !important; }
-    .success-title, .success-flag, .success-meaning{ opacity:1; transform:none; }
+    .success-title, .success-meaning{ opacity:1; transform:none; }
     .success-title::before,
     .success-title::after{ content:none; }
     .question.enter, .answer-btn.enter{ opacity:1; transform:none; }
@@ -682,27 +675,7 @@
 
         <div class="success" id="successState" hidden>
           <div class="success-title" id="successTitle" data-text="ACCESS GRANTED">ACCESS GRANTED</div>
-          <svg class="success-flag" viewBox="0 0 200 100" role="img" aria-label="Jalur Gemilang">
-            <rect x="0" y="0.000" width="200" height="7.143" fill="var(--red)"/>
-            <rect x="0" y="7.143" width="200" height="7.143" fill="#fff"/>
-            <rect x="0" y="14.286" width="200" height="7.143" fill="var(--red)"/>
-            <rect x="0" y="21.429" width="200" height="7.143" fill="#fff"/>
-            <rect x="0" y="28.571" width="200" height="7.143" fill="var(--red)"/>
-            <rect x="0" y="35.714" width="200" height="7.143" fill="#fff"/>
-            <rect x="0" y="42.857" width="200" height="7.143" fill="var(--red)"/>
-            <rect x="0" y="50.000" width="200" height="7.143" fill="#fff"/>
-            <rect x="0" y="57.143" width="200" height="7.143" fill="var(--red)"/>
-            <rect x="0" y="64.286" width="200" height="7.143" fill="#fff"/>
-            <rect x="0" y="71.429" width="200" height="7.143" fill="var(--red)"/>
-            <rect x="0" y="78.571" width="200" height="7.143" fill="#fff"/>
-            <rect x="0" y="85.714" width="200" height="7.143" fill="var(--red)"/>
-            <rect x="0" y="92.857" width="200" height="7.143" fill="#fff"/>
-            <rect x="0" y="0" width="100" height="50" fill="var(--navy)"/>
-            <circle cx="35" cy="25" r="16" fill="var(--gold)"/>
-            <circle cx="41" cy="25" r="16" fill="var(--navy)"/>
-            <polygon fill="var(--gold)" points="65.0,11.0 66.3,19.2 71.1,12.4 68.7,20.3 75.9,16.3 70.4,22.4 78.6,21.9 71.0,25.0 78.6,28.1 70.4,27.6 75.9,33.7 68.7,29.7 71.1,37.6 66.3,30.8 65.0,39.0 63.7,30.8 58.9,37.6 61.3,29.7 54.1,33.7 59.6,27.6 51.4,28.1 59.0,25.0 51.4,21.9 59.6,22.4 54.1,16.3 61.3,20.3 58.9,12.4 63.7,19.2"/>
-          </svg>
-          <div class="success-meaning">The year Malaysia became free.</div>
+          <div class="success-meaning">The year Malaysia attained independence.</div>
         </div>
       </div>
     </div>
