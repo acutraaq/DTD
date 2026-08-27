@@ -695,7 +695,7 @@
     var idx = 0;
     function next(){
       if (idx >= PILLARS.length){
-        setT(showCta, 400);
+        setT(showCta, 250);
         return;
       }
       var pillar = PILLARS[idx];
@@ -711,16 +711,16 @@
       void wrap.offsetWidth;
 
       setT(function(){
-        typeInto(titleEl, pillar.title, 26, function(){
+        typeInto(titleEl, pillar.title, 14, function(){
           setT(function(){
-            typeInto(bodyEl, pillar.body, 12, function(){
+            typeInto(bodyEl, pillar.body, 6, function(){
               srAnnounce.textContent = pillar.title + '. ' + pillar.body;
               idx++;
-              setT(next, 550);
+              setT(next, 280);
             });
-          }, 150);
+          }, 80);
         });
-      }, 300);
+      }, 150);
     }
     next();
   }
