@@ -828,15 +828,31 @@
     answersEl.innerHTML = '';
     // escalates in energy each question, peaking on the final one
     // built around the small Jalur Gemilang flag each audience member is given —
-    // each pair is one "waving/up" gesture vs one "still/held" gesture, so the
-    // emcee can read the room's majority at a glance from the stage
+    // each pair is one "waving/up" gesture (correct) vs one "still/held" gesture
+    // (incorrect), so the emcee can read the room's majority at a glance from the
+    // stage. Each tier also has a separate backup pair (all 16 texts are unique)
+    // so swapping to the backup question after a wrong answer never repeats the
+    // gesture pair the audience just saw.
     var GESTURE_TIERS = [
-      ['Pegang Bendera di Dada', 'Angkat Bendera Tinggi-tinggi'],
-      ['Kibar Bendera Perlahan-lahan', 'Genggam Bendera Rapat ke Dada'],
-      ['Berdiri Sambil Angkat Bendera', 'Kekal Duduk, Bendera di Dada'],
-      ['Berdiri, Kibar Bendera, Laung "Merdeka!"', 'Berdiri Diam, Bendera di Dada']
+      {
+        primary: { correct: 'Angkat Bendera Tinggi-tinggi', incorrect: 'Pegang Bendera di Dada' },
+        backup:  { correct: 'Lambai Bendera ke Udara', incorrect: 'Dakap Bendera di Dada' }
+      },
+      {
+        primary: { correct: 'Kibar Bendera Perlahan-lahan', incorrect: 'Genggam Bendera Rapat ke Dada' },
+        backup:  { correct: 'Ayun Bendera ke Kiri-Kanan', incorrect: 'Selit Bendera di Bahu' }
+      },
+      {
+        primary: { correct: 'Berdiri Sambil Angkat Bendera', incorrect: 'Kekal Duduk, Bendera di Dada' },
+        backup:  { correct: 'Berdiri, Rentang Bendera Tinggi', incorrect: 'Kekal Duduk, Lipat Bendera' }
+      },
+      {
+        primary: { correct: 'Berdiri, Kibar Bendera, Laung "Merdeka!"', incorrect: 'Berdiri Diam, Bendera di Dada' },
+        backup:  { correct: 'Berdiri, Kibar Bendera Rancak, Laung "Merdeka!" 3 Kali', incorrect: 'Berdiri Kaku, Bendera Tergantung' }
+      }
     ];
-    var GESTURES = GESTURE_TIERS[Math.min(current, GESTURE_TIERS.length - 1)];
+    var tier = GESTURE_TIERS[Math.min(current, GESTURE_TIERS.length - 1)];
+    var GESTURES = backupAvailable[current] ? tier.primary : tier.backup;
     var shuffledChoices = item.choices.slice();
     for (var sc = shuffledChoices.length - 1; sc > 0; sc--){
       var swapIdx = Math.floor(Math.random() * (sc + 1));
@@ -852,8 +868,8 @@
 
       var tag = document.createElement('span');
       tag.className = 'gesture-tag';
-      // gesture pins to correctness, not shuffle position; tier 1 has correct at index 0
-      tag.textContent = current === 0 ? GESTURES[choice.correct ? 1 : 0] : GESTURES[choice.correct ? 0 : 1];
+      // gesture pins to correctness, not shuffle position
+      tag.textContent = choice.correct ? GESTURES.correct : GESTURES.incorrect;
       tag.setAttribute('aria-hidden', 'true');
       btn.appendChild(tag);
 
