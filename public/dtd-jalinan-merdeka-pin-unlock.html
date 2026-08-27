@@ -349,8 +349,9 @@
 
   .answer-btn{
     display:flex;
-    align-items:center;
-    gap:20px;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
     font-family:'Archivo Black',sans-serif;
     font-size:28px;
     text-transform:uppercase;
@@ -365,13 +366,15 @@
   }
   .gesture-tag{
     flex-shrink:0;
+    align-self:flex-start;
     font-family:'Space Mono',monospace;
-    font-size:16px;
+    font-weight:700;
+    font-size:22px;
     letter-spacing:1.5px;
     color:var(--navy);
     background:var(--cyan);
     border-radius:20px;
-    padding:6px 14px;
+    padding:10px 20px;
   }
   .answer-btn.enter{ animation:fadeSlideIn .35s ease-out both; }
   .answer-btn:hover:not(:disabled){
@@ -666,7 +669,7 @@
             <div class="trivia-label">Did You Know</div>
             <div class="trivia-text" id="triviaText"></div>
           </div>
-          <button type="button" class="continue-btn" id="continueBtn" hidden>Continue &rarr;</button>
+          <button type="button" class="continue-btn" id="continueBtn" hidden>Continue</button>
         </div>
 
         <div class="success" id="successState" hidden>
@@ -827,9 +830,9 @@
     // emcee can read the room's majority at a glance from the stage
     var GESTURE_TIERS = [
       ['Pegang Bendera di Dada', 'Angkat Bendera Tinggi-tinggi'],
-      ['Kibas Bendera Perlahan-lahan', 'Genggam Bendera Rapat ke Dada'],
+      ['Kibar Bendera Perlahan-lahan', 'Genggam Bendera Rapat ke Dada'],
       ['Berdiri Sambil Angkat Bendera', 'Kekal Duduk, Bendera di Dada'],
-      ['Berdiri, Kibas Bendera, Laung "Merdeka!"', 'Berdiri Diam, Bendera di Dada']
+      ['Berdiri, Kibar Bendera, Laung "Merdeka!"', 'Berdiri Diam, Bendera di Dada']
     ];
     var GESTURES = GESTURE_TIERS[Math.min(current, GESTURE_TIERS.length - 1)];
     var shuffledChoices = item.choices.slice();
