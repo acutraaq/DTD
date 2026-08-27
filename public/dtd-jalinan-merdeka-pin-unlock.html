@@ -730,6 +730,8 @@
   <button type="button" class="corner-btn restart-btn" id="restartBtn">Restart</button>
   <button type="button" class="corner-btn mute-btn" id="muteBtn" aria-pressed="false">Mute</button>
   <audio id="bgmAudio" src="assets/music.mp3" loop preload="auto"></audio>
+  <audio id="wrongAudio" src="assets/wrong.mp3" preload="auto"></audio>
+  <audio id="correctAudio" src="assets/correct.mp3" preload="auto"></audio>
 </div>
 
 <script>
@@ -1053,10 +1055,14 @@
   // ---------- background music ----------
   var BGM_MUTE_KEY = 'jm-bgm-muted';
   var bgmAudio = document.getElementById('bgmAudio');
+  var wrongAudio = document.getElementById('wrongAudio');
+  var correctAudio = document.getElementById('correctAudio');
   var muteBtn = document.getElementById('muteBtn');
   var bgmMuted = localStorage.getItem(BGM_MUTE_KEY) === '1';
   bgmAudio.volume = 0.35;
   bgmAudio.muted = bgmMuted;
+  wrongAudio.muted = bgmMuted;
+  correctAudio.muted = bgmMuted;
 
   function updateMuteBtn(){
     muteBtn.textContent = bgmMuted ? 'Unmute' : 'Mute';
@@ -1082,6 +1088,8 @@
   muteBtn.addEventListener('click', function(){
     bgmMuted = !bgmMuted;
     bgmAudio.muted = bgmMuted;
+    wrongAudio.muted = bgmMuted;
+    correctAudio.muted = bgmMuted;
     localStorage.setItem(BGM_MUTE_KEY, bgmMuted ? '1' : '0');
     updateMuteBtn();
     if (!bgmMuted) playBgm();
@@ -1147,10 +1155,13 @@
   }
 
   function playCorrect(){
-    beep(660, 0.14, 'sine', 0, 0.3);
-    beep(990, 0.18, 'sine', 0.1, 0.3);
+    correctAudio.currentTime = 0;
+    correctAudio.play().catch(function(){});
   }
-  function playWrong(){ beep(150, 0.4, 'sawtooth', 0, 0.25); }
+  function playWrong(){
+    wrongAudio.currentTime = 0;
+    wrongAudio.play().catch(function(){});
+  }
   function playUnlock(){
     var notes = [523.25, 659.25, 783.99, 1046.50];
     notes.forEach(function(f, i){ beep(f, 0.28, 'sine', i * 0.16, 0.22); });
