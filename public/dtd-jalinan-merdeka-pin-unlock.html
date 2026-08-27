@@ -128,10 +128,9 @@
 
   [hidden]{ display:none !important; }
 
-  .mute-btn{
+  .corner-btn{
     position:absolute;
     top:24px;
-    right:24px;
     z-index:10;
     font-family:'Space Mono',monospace;
     font-size:13px;
@@ -146,13 +145,15 @@
     opacity:.55;
     transition:opacity .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
   }
-  .mute-btn:hover,
-  .mute-btn:focus-visible{
+  .corner-btn:hover,
+  .corner-btn:focus-visible{
     opacity:1;
     color:var(--cyan);
     background:rgba(34,192,222,.15);
     border-color:rgba(34,192,222,.6);
   }
+  .mute-btn{ right:24px; }
+  .restart-btn{ left:24px; }
   .mute-btn[aria-pressed="true"]{
     color:rgba(215,40,47,.6);
     border-color:rgba(215,40,47,.3);
@@ -403,27 +404,10 @@
     border-color:var(--red);
   }
 
-  .feedback{
-    min-height:22px;
-    margin-top:14px;
-  }
-  .feedback:not(:empty){
-    display:inline-block;
-    padding:6px 14px;
-    border-radius:20px;
-    font-family:'Space Mono',monospace;
-    font-weight:700;
-    font-size:18px;
-    letter-spacing:1.5px;
-    text-transform:uppercase;
-  }
-  .feedback-correct{ color:var(--green); background:rgba(31,157,85,.12); border:1px solid rgba(31,157,85,.4); }
-  .feedback-wrong{ color:var(--red); background:rgba(215,40,47,.12); border:1px solid rgba(215,40,47,.4); }
-
   .continue-btn{
     display:block;
     width:100%;
-    margin-top:16px;
+    margin-top:0;
     font-family:'Archivo Black',sans-serif;
     font-size:22px;
     text-transform:uppercase;
@@ -436,7 +420,6 @@
     cursor:pointer;
     transition:background .15s ease, transform .1s ease, box-shadow .15s ease;
   }
-  .continue-btn.enter{ animation:fadeSlideIn .35s ease-out both; }
   .continue-btn:hover{ background:#33a0ff; box-shadow:0 0 16px rgba(0,128,255,.5); }
   .continue-btn:active{ transform:scale(.97); }
   .continue-btn:focus-visible{
@@ -444,18 +427,6 @@
     outline-offset:3px;
   }
 
-  .trivia{
-    max-height:0;
-    opacity:0;
-    overflow:hidden;
-    margin-top:0;
-    transition:max-height .35s ease, opacity .35s ease, margin-top .35s ease;
-  }
-  .trivia.shown{
-    max-height:220px;
-    opacity:1;
-    margin-top:16px;
-  }
   .trivia-label{
     font-family:'Space Mono',monospace;
     font-size:18px;
@@ -470,6 +441,74 @@
     font-size:21px;
     line-height:1.5;
     color:var(--panel);
+  }
+
+  .modal-overlay{
+    position:absolute;
+    inset:0;
+    z-index:30;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(2,6,20,.72);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .25s ease;
+  }
+  .modal-overlay.shown{
+    opacity:1;
+    pointer-events:auto;
+  }
+  .modal-card{
+    width:640px;
+    max-width:80%;
+    background:rgba(0,12,58,.94);
+    border:2px solid var(--cyan);
+    border-radius:10px;
+    padding:44px 56px;
+    text-align:center;
+    box-shadow:0 0 40px rgba(34,192,222,.3), inset 0 0 30px rgba(34,192,222,.06);
+    transform:scale(.85) translateY(16px);
+    opacity:0;
+    transition:transform .3s cubic-bezier(.16,1,.3,1), opacity .3s ease;
+  }
+  .modal-overlay.shown .modal-card{
+    transform:scale(1) translateY(0);
+    opacity:1;
+  }
+  .modal-card.correct{
+    border-color:var(--gold);
+    box-shadow:0 0 40px rgba(255,215,0,.35), inset 0 0 30px rgba(255,215,0,.08);
+  }
+  .modal-card.wrong{
+    border-color:var(--red);
+    box-shadow:0 0 40px rgba(215,40,47,.35), inset 0 0 30px rgba(215,40,47,.08);
+  }
+  .modal-title{
+    font-family:'Archivo Black',sans-serif;
+    font-size:44px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    margin:0 0 8px 0;
+  }
+  .modal-card.correct .modal-title{ color:var(--gold); text-shadow:0 0 18px rgba(255,215,0,.5); }
+  .modal-card.wrong .modal-title{ color:var(--red); text-shadow:0 0 18px rgba(215,40,47,.5); }
+  .modal-sub{
+    font-family:'Space Mono',monospace;
+    font-size:18px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    opacity:.8;
+    color:var(--panel);
+    margin:0 0 22px 0;
+  }
+  .modal-trivia{
+    text-align:left;
+    background:rgba(34,192,222,.08);
+    border:1px solid rgba(34,192,222,.3);
+    border-radius:6px;
+    padding:18px 22px;
+    margin-bottom:26px;
   }
 
   .success{
@@ -622,7 +661,7 @@
     .slot:not(.filled){ opacity:.8; }
     .slot, .answer-btn{ transition:none; }
     .answer-btn:active{ transform:none; }
-    .trivia{ transition:none; }
+    .modal-overlay, .modal-card{ transition:none; }
     #glitchLayer.glitch-active{
       animation:none !important;
       filter:none !important;
@@ -666,12 +705,6 @@
           </div>
           <div class="question" id="questionText"></div>
           <div class="answers" id="answersEl"></div>
-          <div class="feedback" id="feedbackEl" aria-live="polite"></div>
-          <div class="trivia" id="triviaEl" aria-live="polite">
-            <div class="trivia-label">Did You Know</div>
-            <div class="trivia-text" id="triviaText"></div>
-          </div>
-          <button type="button" class="continue-btn" id="continueBtn" hidden>Continue</button>
         </div>
 
         <div class="success" id="successState" hidden>
@@ -679,10 +712,23 @@
           <div class="success-meaning">The year Malaysia attained independence.</div>
         </div>
       </div>
+
+      <div class="modal-overlay" id="answerModal" aria-live="polite" hidden>
+        <div class="modal-card" id="modalCard">
+          <div class="modal-title" id="modalTitle"></div>
+          <div class="modal-sub" id="modalSub"></div>
+          <div class="modal-trivia">
+            <div class="trivia-label">Did You Know</div>
+            <div class="trivia-text" id="triviaText"></div>
+          </div>
+          <button type="button" class="continue-btn" id="continueBtn">Continue</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <button type="button" class="mute-btn" id="muteBtn" aria-pressed="false">Mute</button>
+  <button type="button" class="corner-btn restart-btn" id="restartBtn">Restart</button>
+  <button type="button" class="corner-btn mute-btn" id="muteBtn" aria-pressed="false">Mute</button>
   <audio id="bgmAudio" src="assets/music.mp3" loop preload="auto"></audio>
 </div>
 
@@ -792,25 +838,34 @@
   var progressDots = document.getElementById('progressDots');
   var questionText = document.getElementById('questionText');
   var answersEl    = document.getElementById('answersEl');
-  var feedbackEl   = document.getElementById('feedbackEl');
-  var triviaEl     = document.getElementById('triviaEl');
+  var answerModal  = document.getElementById('answerModal');
+  var modalCard    = document.getElementById('modalCard');
+  var modalTitle   = document.getElementById('modalTitle');
+  var modalSub     = document.getElementById('modalSub');
   var triviaText   = document.getElementById('triviaText');
   var continueBtn  = document.getElementById('continueBtn');
   var pendingAdvance = null;
 
-  function showContinue(onAdvance){
+  function showAnswerModal(kind, title, sub, trivia, onAdvance){
     pendingAdvance = onAdvance;
-    continueBtn.hidden = false;
-    void continueBtn.offsetWidth;
-    continueBtn.classList.add('enter');
+    modalCard.className = 'modal-card ' + kind;
+    modalTitle.textContent = title;
+    modalSub.textContent = sub;
+    triviaText.textContent = trivia;
+    answerModal.hidden = false;
+    void answerModal.offsetWidth;
+    answerModal.classList.add('shown');
     continueBtn.focus();
+  }
+  function hideAnswerModal(){
+    answerModal.classList.remove('shown');
+    setTimeout(function(){ answerModal.hidden = true; }, 250);
   }
   continueBtn.addEventListener('click', function(){
     if (!pendingAdvance) return;
     var advance = pendingAdvance;
     pendingAdvance = null;
-    continueBtn.hidden = true;
-    continueBtn.classList.remove('enter');
+    hideAnswerModal();
     advance();
   });
 
@@ -880,13 +935,10 @@
       btn.addEventListener('click', function(){ handleAnswer(choice, btn); });
       answersEl.appendChild(btn);
     });
-    feedbackEl.textContent = '';
-    feedbackEl.className = 'feedback';
     triviaText.textContent = '';
-    triviaEl.className = 'trivia';
     pendingAdvance = null;
-    continueBtn.hidden = true;
-    continueBtn.classList.remove('enter');
+    answerModal.classList.remove('shown');
+    answerModal.hidden = true;
   }
 
   function setButtonsDisabled(state){
@@ -905,22 +957,15 @@
     setTimeout(function(){ contentEl.classList.remove('surge'); }, 700);
   }
 
-  function showTrivia(){
-    triviaText.textContent = activeQuestions[current].trivia;
-    triviaEl.className = 'trivia shown';
-  }
-
   function handleAnswer(choice, btn){
     setButtonsDisabled(true);
+    var trivia = activeQuestions[current].trivia;
     if (choice.correct){
       playCorrect();
       btn.classList.add('flash-correct');
-      feedbackEl.textContent = 'Correct · Digit Unlocked';
-      feedbackEl.className = 'feedback feedback-correct';
       fillSlot(current, activeQuestions[current].digit);
-      showTrivia();
       surge();
-      showContinue(function(){
+      showAnswerModal('correct', 'Correct!', 'Digit Unlocked', trivia, function(){
         current++;
         if (current >= QUESTIONS.length){
           unlockSystem();
@@ -933,18 +978,15 @@
       btn.classList.add('flash-wrong');
       terminalEl.classList.add('flash-wrong-anim');
       triggerGlitch();
-      showTrivia();
       var swapped = backupAvailable[current];
       if (swapped){
         activeQuestions[current] = BACKUP_QUESTIONS[current];
         backupAvailable[current] = false;
       }
-      feedbackEl.textContent = swapped ? 'Not Quite · Question Swapped' : 'Not Quite · Try Again';
-      feedbackEl.className = 'feedback feedback-wrong';
       setTimeout(function(){
         terminalEl.classList.remove('flash-wrong-anim');
       }, 900);
-      showContinue(function(){
+      showAnswerModal('wrong', 'Not Quite', swapped ? 'Question Swapped' : 'Try Again', trivia, function(){
         renderQuestion();
       });
     }
@@ -1004,6 +1046,7 @@
       var Ctx = window.AudioContext || window.webkitAudioContext;
       audioCtx = new Ctx();
     }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
     return audioCtx;
   }
 
@@ -1044,6 +1087,29 @@
     if (!bgmMuted) playBgm();
   });
 
+  // ---------- restart (unobtrusive operator control, styled like the mute button) ----------
+  var restartBtn = document.getElementById('restartBtn');
+  restartBtn.addEventListener('click', function(){
+    current = 0;
+    systemUnlocked = false;
+    activeQuestions = QUESTIONS.slice();
+    backupAvailable = [true, true, true, true];
+    pendingAdvance = null;
+    answerModal.classList.remove('shown');
+    answerModal.hidden = true;
+    for (var i = 0; i < 4; i++){
+      var slot = document.getElementById('slot' + i);
+      slot.textContent = '_';
+      slot.classList.remove('filled');
+    }
+    statusLine.textContent = 'Status: Awaiting Verification';
+    statusLine.classList.remove('unlocked');
+    successState.hidden = true;
+    quizCard.hidden = false;
+    renderQuestion();
+    playBgm();
+  });
+
   function fadeOutBgm(duration){
     duration = duration || 2500;
     var startVol = bgmAudio.volume;
@@ -1080,7 +1146,10 @@
     osc.stop(t0 + dur + 0.03);
   }
 
-  function playCorrect(){ beep(760, 0.1, 'square'); }
+  function playCorrect(){
+    beep(660, 0.14, 'sine', 0, 0.3);
+    beep(990, 0.18, 'sine', 0.1, 0.3);
+  }
   function playWrong(){ beep(150, 0.4, 'sawtooth', 0, 0.25); }
   function playUnlock(){
     var notes = [523.25, 659.25, 783.99, 1046.50];
